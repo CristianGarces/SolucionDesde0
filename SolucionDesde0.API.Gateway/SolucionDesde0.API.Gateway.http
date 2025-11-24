@@ -1,0 +1,6 @@
+@SolucionDesde0.API.Gateway_HostAddress = http://localhost:5137
+
+GET {{SolucionDesde0.API.Gateway_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

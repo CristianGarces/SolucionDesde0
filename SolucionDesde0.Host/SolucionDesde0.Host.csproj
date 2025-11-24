@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SolucionDesde0.API.Gateway\SolucionDesde0.API.Gateway.csproj" />
     <ProjectReference Include="..\SolucionDesde0.API.Identity\SolucionDesde0.API.Identity.csproj" />
   </ItemGroup>
 
