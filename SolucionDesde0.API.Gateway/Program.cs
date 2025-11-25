@@ -1,6 +1,9 @@
 using SolucionDesde0.API.Gateway.Extensions;
+using SolucionDesde0.ServiceDefaults;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.AddServiceDefaults();
 
 builder.Services.AddControllers();
 
@@ -25,5 +28,6 @@ app.UseCors();
 app.MapReverseProxy();
 
 app.MapControllers();
+app.MapDefaultEndpoints();
 
 app.Run();

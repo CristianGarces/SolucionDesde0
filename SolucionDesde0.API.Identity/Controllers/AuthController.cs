@@ -10,12 +10,13 @@ namespace SolucionDesde0.API.Identity.Controllers
     [Route("api/v{v:apiVersion}/[controller]")]
     public class AuthController : ControllerBase
     {
-        private IEnumerable<User> _users = new List<User>();
         private IAuthService _authService;
+        private readonly ILogger<AuthController> _logger;
 
-        public AuthController(IAuthService authService)
+        public AuthController(IAuthService authService, ILogger<AuthController> logger)
         {
             _authService = authService;
+            _logger = logger;
         }
 
         [MapToApiVersion(1)]
@@ -23,6 +24,8 @@ namespace SolucionDesde0.API.Identity.Controllers
         public async Task<IActionResult> Register([FromBody] User user)
         {
             var result = await _authService.Register(user.Email, user.Password);
+
+            _logger.LogInformation("User registered: {env}", Environment.GetEnvironmentVariable("Version"));
 
             return Ok(result);
         }
@@ -35,8 +38,11 @@ namespace SolucionDesde0.API.Identity.Controllers
 
             if (result == null)
             {
+                _logger.LogWarning("Failed login attempt: {Email}", user.Email);
                 return Unauthorized();
             }
+
+            _logger.LogInformation("User logged in: {Email}", user.Email);
 
             return Ok(result);
         }

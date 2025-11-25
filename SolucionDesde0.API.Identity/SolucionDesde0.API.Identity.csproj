@@ -32,4 +32,8 @@
 		<PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\SolucionDesde0.ServiceDefaults\SolucionDesde0.ServiceDefaults.csproj" />
+	</ItemGroup>
+
 </Project>

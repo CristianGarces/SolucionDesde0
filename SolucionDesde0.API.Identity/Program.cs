@@ -4,11 +4,15 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SolucionDesde0.API.Identity.Services;
+using SolucionDesde0.ServiceDefaults;
 using System;
 using System.Text;
 using Tienda.Identity.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Para las traces (Proyecto ServiceDefault)
+builder.AddServiceDefaults();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 // Para el secrets (JWT pass)
@@ -103,5 +107,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapDefaultEndpoints();
 
 app.Run();
