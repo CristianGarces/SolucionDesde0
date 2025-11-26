@@ -1,4 +1,5 @@
 ﻿using Asp.Versioning;
+using FluentValidation;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SolucionDesde0.API.Identity.Dto.Users;
@@ -21,8 +22,18 @@ namespace SolucionDesde0.API.Gateway.Controllers
         // Patch para actualizar solo un campo, Put modifica todo el objeto
         [MapToApiVersion(1)]
         [HttpPatch("{userId}/change-pass")]
-        public async Task<ActionResult<PasswordChangeResponse>> ChangePassword(string userId, [FromBody] PasswordChangeRequest request)
+        public async Task<ActionResult<PasswordChangeResponse>> ChangePassword(
+            string userId, 
+            [FromBody] PasswordChangeRequest request,
+            [FromServices] IValidator<PasswordChangeRequest> validator)
         {
+            var validation = await validator.ValidateAsync(request);
+
+            if (!validation.IsValid)
+            {
+                return BadRequest(validation.Errors);
+            }
+
             var result = await _userService.ChangePasswordAsync(userId, request.CurrentPassword, request.NewPassword);
 
             var response = new PasswordChangeResponse()

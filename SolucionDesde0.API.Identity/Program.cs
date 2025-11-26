@@ -1,4 +1,5 @@
 using Asp.Versioning;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -9,6 +10,9 @@ using System.Text;
 using Tienda.Identity.Data;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Validation
+builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 // Para las traces (Proyecto ServiceDefault)
 builder.AddServiceDefaults();

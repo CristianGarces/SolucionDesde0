@@ -1,4 +1,6 @@
-﻿namespace SolucionDesde0.API.Identity.Dto.Users
+﻿using FluentValidation;
+
+namespace SolucionDesde0.API.Identity.Dto.Users
 {
     public sealed class PasswordChangeResponse
     {
