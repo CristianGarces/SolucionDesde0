@@ -5,7 +5,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SolucionDesde0.API.Identity.Services;
 using SolucionDesde0.ServiceDefaults;
-using System;
 using System.Text;
 using Tienda.Identity.Data;
 
@@ -15,6 +14,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUserService, UserService>();
 // Para el secrets (JWT pass)
 builder.Configuration.AddUserSecrets(typeof(Program).Assembly, true);
 
@@ -66,8 +66,10 @@ builder.Services.AddApiVersioning(options =>
 });
 
 // Add JWT configuration
-builder.Services.AddAuthentication();
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+})
         .AddJwtBearer(options =>
         {
             options.TokenValidationParameters = new TokenValidationParameters
@@ -81,6 +83,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JWT:SecretKey").Value!))
             };
         });
+
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
