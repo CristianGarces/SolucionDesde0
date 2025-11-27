@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using SolucionDesde0.API.Identity.Dto.Auth;
 using SolucionDesde0.Shared;
+using SolucionDesde0.Shared.Events;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
