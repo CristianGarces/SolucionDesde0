@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using MassTransit;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 using SolucionDesde0.API.Identity.Dto.Auth;
+using SolucionDesde0.Shared;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -13,12 +15,14 @@ namespace SolucionDesde0.API.Identity.Services
         private RoleManager<IdentityRole> _roleManager;
         // Para el JWT (coge info de appsettings)
         private readonly IConfiguration _configuration;
+        private readonly IPublishEndpoint _publishEndpoint;
 
-        public AuthService(UserManager<IdentityUser> userManeger, RoleManager<IdentityRole> roleManager, IConfiguration configuration)
+        public AuthService(UserManager<IdentityUser> userManeger, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IPublishEndpoint publishEndpoint)
         {
             _userManeger = userManeger;
             _roleManager = roleManager;
             _configuration = configuration;
+            _publishEndpoint = publishEndpoint;
         }
         public async Task<bool> Register(string email, string password)
         {
@@ -27,6 +31,13 @@ namespace SolucionDesde0.API.Identity.Services
                 UserName = email.Split("@")[0],
                 Email = email
             }, password);
+
+            var user = await _userManeger.FindByEmailAsync(email);
+
+            if (user != null)
+            {
+                await _publishEndpoint.Publish(new UserCreatedEvents(user.Id, user.Email!));
+            }
 
             return result.Succeeded;
         }

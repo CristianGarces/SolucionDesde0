@@ -13,6 +13,12 @@ var redis = builder.AddRedis("redis")
     .WithLifetime(ContainerLifetime.Persistent)
     .WithRedisInsight();
 
+// RabbitMq
+var rabbitMq = builder.AddRabbitMQ("rabbitmq")
+    .WithDataVolume(isReadOnly: false)
+    .WithLifetime(ContainerLifetime.Persistent)
+    .WithManagementPlugin();
+
 // Postgres y PgAdmin
 var postgres = builder
     .AddPostgres("postgres")
@@ -25,8 +31,9 @@ var postgresDb = postgres.AddDatabase("SolucionDesde0Db");
 // Reference Db to Identity and Enviroment
 identity
     .WaitFor(postgresDb)
-    .WithEnvironment("Version", "1") 
-    .WithReference(postgresDb);
+    .WaitFor(rabbitMq)
+    .WithReference(postgresDb)
+    .WithReference(rabbitMq);
 
 //identity2
 //    .WaitFor(postgresDb)

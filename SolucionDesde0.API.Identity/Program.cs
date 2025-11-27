@@ -1,8 +1,10 @@
 using Asp.Versioning;
 using FluentValidation;
+using MassTransit;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SolucionDesde0.API.Identity.Services;
 using SolucionDesde0.ServiceDefaults;
@@ -27,6 +29,22 @@ builder.Services.AddControllers();
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddMassTransit(x =>
+{
+    x.UsingRabbitMq((context, cfg) =>
+    {
+        var configuration = context.GetRequiredService<IConfiguration>();
+        var connectionString = configuration.GetConnectionString("rabbitmq");
+
+        if (!string.IsNullOrEmpty(connectionString))
+        {
+            cfg.Host(new Uri(connectionString));
+        }
+
+        cfg.ConfigureEndpoints(context);
+    });
+});
 
 // Crear cadena conexion
 builder.AddNpgsqlDbContext<ApplicationDbContext>("SolucionDesde0Db");
