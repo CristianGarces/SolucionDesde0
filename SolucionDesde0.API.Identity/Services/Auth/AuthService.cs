@@ -1,6 +1,7 @@
 ﻿using MassTransit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
+using SolucionDesde0.API.Identity.Data;
 using SolucionDesde0.API.Identity.Dto.Auth;
 using SolucionDesde0.Shared;
 using SolucionDesde0.Shared.Events;
@@ -8,7 +9,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 
-namespace SolucionDesde0.API.Identity.Services
+namespace SolucionDesde0.API.Identity.Services.Auth
 {
     public class AuthService : IAuthService
     {
@@ -34,6 +35,17 @@ namespace SolucionDesde0.API.Identity.Services
             };
 
             var result = await _userManeger.CreateAsync(user, password);
+
+            var addToRoleResult = await _userManeger.AddToRoleAsync(user, Roles.Member);
+            if (!addToRoleResult.Succeeded)
+            {
+                await _userManeger.DeleteAsync(user);
+                return new RegisterResponse
+                {
+                    Succeeded = false,
+                    Errors = addToRoleResult.Errors.Select(e => e.Description)
+                };
+            }
 
             if (result.Succeeded && user != null)
             {

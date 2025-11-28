@@ -3,7 +3,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using SolucionDesde0.API.Identity.Dto.Auth;
 using SolucionDesde0.API.Identity.Dto.Users;
-using SolucionDesde0.API.Identity.Services;
+using SolucionDesde0.API.Identity.Services.Auth;
 using System.Threading.Tasks;
 
 namespace SolucionDesde0.API.Identity.Controllers

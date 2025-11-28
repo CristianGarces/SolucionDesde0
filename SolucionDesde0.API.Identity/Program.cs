@@ -6,7 +6,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
-using SolucionDesde0.API.Identity.Services;
+using SolucionDesde0.API.Identity.Data;
+using SolucionDesde0.API.Identity.Services.Auth;
+using SolucionDesde0.API.Identity.Services.User;
 using SolucionDesde0.ServiceDefaults;
 using System.Text;
 using Tienda.Identity.Data;
@@ -21,6 +23,7 @@ builder.AddServiceDefaults();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
+
 // Para el secrets (JWT pass)
 builder.Configuration.AddUserSecrets(typeof(Program).Assembly, true);
 
@@ -125,6 +128,16 @@ if (app.Environment.IsDevelopment())
     using var scope = app.Services.CreateScope();
     var context = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
     await context.Database.MigrateAsync();
+
+    // Crear roles por defecto
+    var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+    foreach (var role in Roles.GetAll())
+    {
+        if (!await roleManager.RoleExistsAsync(role))
+        {
+            await roleManager.CreateAsync(new IdentityRole(role));
+        }
+    }
 }
 
 app.UseHttpsRedirection();

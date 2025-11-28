@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using SolucionDesde0.API.Identity.Dto.Auth;
 
-namespace SolucionDesde0.API.Identity.Services
+namespace SolucionDesde0.API.Identity.Services.Auth
 {
     public interface IAuthService
     {
