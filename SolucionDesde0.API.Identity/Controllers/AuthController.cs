@@ -1,5 +1,8 @@
 ﻿using Asp.Versioning;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using SolucionDesde0.API.Identity.Dto.Auth;
+using SolucionDesde0.API.Identity.Dto.Users;
 using SolucionDesde0.API.Identity.Services;
 using System.Threading.Tasks;
 
@@ -10,7 +13,7 @@ namespace SolucionDesde0.API.Identity.Controllers
     [Route("api/v{v:apiVersion}/[controller]")]
     public class AuthController : ControllerBase
     {
-        private IAuthService _authService;
+        private readonly IAuthService _authService;
         private readonly ILogger<AuthController> _logger;
 
         public AuthController(IAuthService authService, ILogger<AuthController> logger)
@@ -21,19 +24,40 @@ namespace SolucionDesde0.API.Identity.Controllers
 
         [MapToApiVersion(1)]
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] User user)
+        public async Task<IActionResult> Register(
+            [FromBody] RegisterRequest user,
+            [FromServices] IValidator<RegisterRequest> validator)
         {
-            var result = await _authService.Register(user.Email, user.Password);
+            var validationResult = await validator.ValidateAsync(user);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
 
-            //_logger.LogInformation("User registered: {env}", Environment.GetEnvironmentVariable("Version"));
+            var result = await _authService.Register(user.Name, user.Email, user.Password);
 
+            if(result == null)
+            {
+                _logger.LogWarning("Failed registration attempt: {Email}", user.Email);
+                return BadRequest("Registration failed.");
+            }
+            
+            _logger.LogInformation("User registered: {Email}", user.Email);
             return Ok(result);
         }
 
         [MapToApiVersion(1)]
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromBody] User user)
+        public async Task<IActionResult> Login(
+            [FromBody] LoginRequest user,
+            [FromServices] IValidator<LoginRequest> validator)
         {
+            var validationResult = await validator.ValidateAsync(user);
+            if (!validationResult.IsValid)
+            {
+                return BadRequest(validationResult.Errors);
+            }
+
             var result = await _authService.Login(user.Email, user.Password);
 
             if (result == null)
@@ -46,11 +70,5 @@ namespace SolucionDesde0.API.Identity.Controllers
 
             return Ok(result);
         }
-    }
-
-    public class User()
-    {
-        public string Email { get; set; }
-        public string Password { get; set; }
     }
 }

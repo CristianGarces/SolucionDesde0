@@ -25,25 +25,35 @@ namespace SolucionDesde0.API.Identity.Services
             _configuration = configuration;
             _publishEndpoint = publishEndpoint;
         }
-        public async Task<bool> Register(string email, string password)
+        public async Task<RegisterResponse> Register(string name, string email, string password)
         {
-            var result = await _userManeger.CreateAsync(new IdentityUser
+            var user = new IdentityUser
             {
-                UserName = email.Split("@")[0],
+                UserName = name,
                 Email = email
-            }, password);
+            };
 
-            var user = await _userManeger.FindByEmailAsync(email);
+            var result = await _userManeger.CreateAsync(user, password);
 
-            if (user != null)
+            if (result.Succeeded && user != null)
             {
                 await _publishEndpoint.Publish(new UserCreatedEvents(user.Id, user.Email!));
+
+                return new RegisterResponse
+                {
+                    Succeeded = true,
+                    Errors = Enumerable.Empty<string>()
+                };
             }
 
-            return result.Succeeded;
+            return new RegisterResponse
+            {
+                Succeeded = false,
+                Errors = result.Errors.Select(e => e.Description)
+            };
         }
 
-        public async Task<ResponseLogin> Login(string email, string password)
+        public async Task<Login> Login(string email, string password)
         {
             var user = await _userManeger.FindByEmailAsync(email);
 
@@ -91,7 +101,7 @@ namespace SolucionDesde0.API.Identity.Services
             var encryptedToken = new JwtSecurityTokenHandler().WriteToken(token);
 
 
-            return new ResponseLogin
+            return new Login
             {
                 Token = encryptedToken,
                 Expiration = DateTime.UtcNow.AddMinutes(expirationMinutes)

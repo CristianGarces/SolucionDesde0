@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using SolucionDesde0.API.Identity.Dto.Users;
 
 namespace SolucionDesde0.API.Identity.Services
 {
@@ -13,7 +14,32 @@ namespace SolucionDesde0.API.Identity.Services
             _logger = logger;
         }
 
-        // Change Password
+        public async Task<CreateUserResponse> CreateUser(string name, string email, string password)
+        {
+            var user = new IdentityUser
+            {
+                UserName = name,
+                Email = email
+            };
+
+            var result = await _userManager.CreateAsync(user, password);
+            if (!result.Succeeded)
+            {
+                _logger.LogError("Error creating user {UserName}: {Errors}", name, string.Join(", ", result.Errors.Select(e => e.Description)));
+                return new CreateUserResponse
+                {
+                    Success = false,
+                    Errors = result.Errors.Select(e => e.Description)
+                };
+            }
+
+            _logger.LogInformation("User {UserName} created successfully", name);
+            return new CreateUserResponse
+            {
+                Success = true
+            };
+        }
+
         public async Task<bool> ChangePasswordAsync(string userId, string currentPassword, string newPassword)
         {
             var user = await _userManager.FindByIdAsync(userId);

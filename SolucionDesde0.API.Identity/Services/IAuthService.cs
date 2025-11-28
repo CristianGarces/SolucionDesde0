@@ -5,7 +5,7 @@ namespace SolucionDesde0.API.Identity.Services
 {
     public interface IAuthService
     {
-        Task<bool> Register(string email, string password);
-        Task<ResponseLogin> Login(string email, string password);
+        Task<RegisterResponse> Register(string name, string email, string password);
+        Task<Login> Login(string email, string password);
     }
 }

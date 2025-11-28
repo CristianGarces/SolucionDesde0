@@ -19,6 +19,33 @@ namespace SolucionDesde0.API.Gateway.Controllers
             _userService = userService;
         }
 
+        // Crear usuario
+        [MapToApiVersion(1)]
+        [HttpPost("create")]
+        public async Task<ActionResult> CreateUser(
+            [FromBody] CreateUserRequest request,
+            [FromServices] IValidator<CreateUserRequest> validator)
+        {
+            var validation = await validator.ValidateAsync(request);
+            if (!validation.IsValid)
+            {
+                return BadRequest(new CreateUserResponse
+                {
+                    Success = false,
+                    Errors = validation.Errors.Select(e => e.ErrorMessage)
+                });
+            }
+
+            var result = await _userService.CreateUser(request.Name, request.Email, request.Password);
+
+            if (!result.Success)
+            {
+                return BadRequest(result);
+            }
+
+            return Ok(result);
+        }
+
         // Patch para actualizar solo un campo, Put modifica todo el objeto
         [MapToApiVersion(1)]
         [HttpPatch("{userId}/change-pass")]

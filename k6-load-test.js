@@ -1,0 +1,103 @@
+import http from 'k6/http';
+import { check, sleep } from 'k6';
+import { Counter, Rate, Trend } from 'k6/metrics';
+
+// Custom metrics
+const registerSuccess = new Counter('register_success');
+const registerFailed = new Counter('register_failed');
+const registerRate = new Rate('register_success_rate');
+const registerDuration = new Trend('register_duration');
+
+// Configuration - can be overridden via environment variables
+const BASE_URL = __ENV.BASE_URL || 'https://localhost:7227';
+const ENDPOINT = __ENV.ENDPOINT || '/api/v1/Auth/register';
+
+// Test options
+export const options = {
+    stages: [
+        { duration: '10s', target: 10 },   // Start with 10 users
+        { duration: '30s', target: 30 },   // Ramp to 30 users
+        { duration: '30s', target: 60 },   // Ramp to 60 users
+        { duration: '30s', target: 100 },  // Ramp to 100 users
+        { duration: '20s', target: 100 },  // Stay at 100 users
+        { duration: '20s', target: 0 },    // Ramp down to 0 users
+    ],
+    thresholds: {
+        http_req_duration: ['p(95)<5000'],
+        http_req_failed: ['rate<0.05'],    // Solo 5% de errores permitidos
+        register_success_rate: ['rate>0.95'],
+    },
+    insecureSkipTLSVerify: true,
+};
+
+// Generate unique email for each request
+function generateUniqueEmail() {
+    const timestamp = Date.now();
+    const randomId = Math.random().toString(36).substring(2, 8);
+    const vuId = __VU; // Virtual user ID
+    const iteration = __ITER; // Iteration number
+    return `test_${vuId}_${iteration}_${timestamp}_${randomId}@test.com`;
+}
+
+let nameCounter = 1;
+
+function generateUniqueName() {
+    const vuId = __VU; // Virtual user ID
+    const iteration = __ITER; // Iteration number
+    return `TestUser_V${vuId}_I${iteration}`;
+}
+
+export default function () {
+    const url = `${BASE_URL}${ENDPOINT}`;
+
+    const payload = JSON.stringify({
+        name: generateUniqueName(),
+        email: generateUniqueEmail(),
+        password: 'Test12345.'
+    });
+
+    const params = {
+        headers: {
+            'Content-Type': 'application/json',
+        },
+    };
+
+    const startTime = Date.now();
+    const response = http.post(url, payload, params);
+    const duration = Date.now() - startTime;
+
+    // Record custom metrics
+    registerDuration.add(duration);
+
+    // Check response
+    const success = check(response, {
+        'status is 200 or 201': (r) => r.status === 200 || r.status === 201,
+        'response time < 2000ms': (r) => r.timings.duration < 2000,
+    });
+
+    if (success) {
+        registerSuccess.add(1);
+        registerRate.add(1);
+        console.log(`Succes request - Status: ${response.status}, Body: ${response.body}`);
+    } else {
+        registerFailed.add(1);
+        registerRate.add(0);
+        console.log(`Failed request - Status: ${response.status}, Body: ${response.body}`);
+    }
+
+    // Wait between requests (think time)
+    sleep(1);
+}
+
+// Setup function - runs once before the test
+export function setup() {
+    console.log(`Starting load test against: ${BASE_URL}${ENDPOINT}`);
+    console.log('Test configuration:');
+    console.log('- Method: POST');
+    console.log('- Generating unique emails for each request');
+}
+
+// Teardown function - runs once after the test
+export function teardown(data) {
+    console.log('Load test completed!');
+}

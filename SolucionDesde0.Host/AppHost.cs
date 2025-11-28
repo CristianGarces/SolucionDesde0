@@ -49,4 +49,8 @@ gateway
 //gateway.WaitFor(identity2).WithReference(identity2);
 
 
+builder.AddProject<Projects.SolucionDesde0_Worker>("soluciondesde0-worker");
+//gateway.WaitFor(identity2).WithReference(identity2);
+
+
 builder.Build().Run();

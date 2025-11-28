@@ -1,7 +1,10 @@
-﻿namespace SolucionDesde0.API.Identity.Services
+﻿using SolucionDesde0.API.Identity.Dto.Users;
+
+namespace SolucionDesde0.API.Identity.Services
 {
     public interface IUserService
     {
-       Task<bool> ChangePasswordAsync(string userId, string currentPassword, string newPassword);
+        Task<bool> ChangePasswordAsync(string userId, string currentPassword, string newPassword);
+        Task<CreateUserResponse> CreateUser(string name, string email, string password);
     }
 }
