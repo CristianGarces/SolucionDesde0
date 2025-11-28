@@ -21,7 +21,7 @@
   <ItemGroup>
     <ProjectReference Include="..\SolucionDesde0.API.Gateway\SolucionDesde0.API.Gateway.csproj" />
     <ProjectReference Include="..\SolucionDesde0.API.Identity\SolucionDesde0.API.Identity.csproj" />
-    <ProjectReference Include="..\SolucionDesde0.Worker\SolucionDesde0.Worker.csproj" />
+    <ProjectReference Include="..\SolucionDesde0.Notification\SolucionDesde0.Notification.csproj" />
   </ItemGroup>
 
 </Project>

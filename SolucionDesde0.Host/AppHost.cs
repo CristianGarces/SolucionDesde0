@@ -28,6 +28,11 @@ var postgres = builder
     .WithPgAdmin(pgAdmin => pgAdmin.WithHostPort(54615));
 var postgresDb = postgres.AddDatabase("SolucionDesde0Db");
 
+// Notifications Service
+var notifications = builder.AddProject<Projects.SolucionDesde0_Notification>("soluciondesde0-notification")
+    .WaitFor(rabbitMq)
+    .WithReference(rabbitMq);
+
 // Reference Db to Identity and Enviroment
 identity
     .WaitFor(postgresDb)
@@ -47,9 +52,9 @@ gateway
     .WaitFor(redis)
     .WithReference(redis);
 //gateway.WaitFor(identity2).WithReference(identity2);
+//gateway.WaitFor(identity2).WithReference(identity2);
 
 
-builder.AddProject<Projects.SolucionDesde0_Worker>("soluciondesde0-worker");
 //gateway.WaitFor(identity2).WithReference(identity2);
 
 
