@@ -4,7 +4,9 @@ namespace SolucionDesde0.API.Identity.Services.User
 {
     public interface IUserService
     {
-        Task<bool> ChangePasswordAsync(string userId, string currentPassword, string newPassword);
-        Task<CrudUserResponse> CreateUser(string name, string email, string password);
+        public Task<CrudUserResponse> UpdateUser(string userId, UpdateUserRequest request);
+        public Task<UserResponse> GetUser(string userId);
+        public Task<CrudUserResponse> DeleteUser(string userId);
+
     }
 }

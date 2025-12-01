@@ -13,52 +13,99 @@ namespace SolucionDesde0.API.Identity.Services.User
             _userManager = userManager;
             _logger = logger;
         }
-
-        public async Task<CrudUserResponse> CreateUser(string name, string email, string password)
+        public async Task<UserResponse> GetUser(string userId)
         {
-            var user = new IdentityUser
-            {
-                UserName = name,
-                Email = email
-            };
+            _logger.LogInformation("Getting user by ID: {UserId}", userId);
 
-            var result = await _userManager.CreateAsync(user, password);
-            if (!result.Succeeded)
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
             {
-                _logger.LogError("Error creating user {UserName}: {Errors}", name, string.Join(", ", result.Errors.Select(e => e.Description)));
+                _logger.LogWarning("User with ID {UserId} not found", userId);
+                return null;
+            }
+
+            _logger.LogInformation("User with ID {UserId} found: {UserName}",
+                userId, user.UserName);
+
+            return new UserResponse
+            {
+                Id = user.Id,
+                Name = user.UserName!,
+                Email = user.Email!,
+            };
+        }
+        public async Task<CrudUserResponse> UpdateUser(string userId, UpdateUserRequest request)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+
+            if (user == null)
+            {
+                _logger.LogWarning("User with ID {UserId} not found for update", userId);
                 return new CrudUserResponse
                 {
                     Success = false,
-                    Errors = result.Errors.Select(e => e.Description)
+                    Errors = new List<string> { "User not found" }
                 };
             }
 
-            _logger.LogInformation("User {UserName} created successfully", name);
+            user.UserName = request.Name;
+            user.Email = request.Email;
+
+            var updateResult = await _userManager.UpdateAsync(user);
+
+            if (!updateResult.Succeeded)
+            {
+                _logger.LogError("Error updating user {UserId}: {Errors}",
+                    userId, string.Join(", ", updateResult.Errors.Select(e => e.Description)));
+
+                return new CrudUserResponse
+                {
+                    Success = false,
+                    Errors = updateResult.Errors.Select(e => e.Description)
+                };
+            }
+
+            _logger.LogInformation("User {UserId} updated successfully", userId);
             return new CrudUserResponse
             {
                 Success = true
             };
         }
 
-        public async Task<bool> ChangePasswordAsync(string userId, string currentPassword, string newPassword)
+        public async Task<CrudUserResponse> DeleteUser(string userId)
         {
             var user = await _userManager.FindByIdAsync(userId);
+
             if (user == null)
             {
-                _logger.LogInformation("User with ID {UserId} not found", userId);
-                return false;
+                _logger.LogWarning("User with ID {UserId} not found for deletion", userId);
+                return new CrudUserResponse
+                {
+                    Success = false,
+                    Errors = new List<string> { "User not found" }
+                };
             }
 
-            var result = await _userManager.ChangePasswordAsync(user, currentPassword, newPassword);
+            var deleteResult = await _userManager.DeleteAsync(user);
 
-            if (!result.Succeeded)
+            if (!deleteResult.Succeeded)
             {
-                _logger.LogError("Error changing password for user with ID {UserId}: {Errors}", userId, string.Join(", ", result.Errors.Select(e => e.Description)));
-                return false;
+                _logger.LogError("Error deleting user {UserId}: {Errors}",
+                    userId, string.Join(", ", deleteResult.Errors.Select(e => e.Description)));
+
+                return new CrudUserResponse
+                {
+                    Success = false,
+                    Errors = deleteResult.Errors.Select(e => e.Description)
+                };
             }
 
-            _logger.LogInformation("Password changed successfully for user with ID {UserId}", userId);
-            return true;
+            _logger.LogInformation("User {UserId} deleted successfully", userId);
+            return new CrudUserResponse
+            {
+                Success = true
+            };
         }
     }
 }

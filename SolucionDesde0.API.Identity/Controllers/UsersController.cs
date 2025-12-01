@@ -14,19 +14,37 @@ namespace SolucionDesde0.API.Gateway.Controllers
     public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
+
         public UsersController(IUserService userService)
         {
             _userService = userService;
         }
 
-        // Crear usuario
+        // GET: api/v1/users/{userId}
         [MapToApiVersion(1)]
-        [HttpPost("create")]
-        public async Task<ActionResult> CreateUser(
-            [FromBody] CreateUserRequest request,
-            [FromServices] IValidator<CreateUserRequest> validator)
+        [HttpGet("{userId}")]
+        public async Task<ActionResult<UserResponse>> GetUser(string userId)
+        {
+            var user = await _userService.GetUser(userId);
+
+            if (user == null)
+            {
+                return NotFound(new { Message = $"Usuario con ID {userId} no encontrado" });
+            }
+
+            return Ok(user);
+        }
+
+        // PUT: api/v1/users/{userId}
+        [MapToApiVersion(1)]
+        [HttpPut("{userId}")]
+        public async Task<ActionResult<CrudUserResponse>> UpdateUser(
+            string userId,
+            [FromBody] UpdateUserRequest request,
+            [FromServices] IValidator<UpdateUserRequest> validator)
         {
             var validation = await validator.ValidateAsync(request);
+
             if (!validation.IsValid)
             {
                 return BadRequest(new CrudUserResponse
@@ -36,7 +54,7 @@ namespace SolucionDesde0.API.Gateway.Controllers
                 });
             }
 
-            var result = await _userService.CreateUser(request.Name, request.Email, request.Password);
+            var result = await _userService.UpdateUser(userId, request);
 
             if (!result.Success)
             {
@@ -46,34 +64,19 @@ namespace SolucionDesde0.API.Gateway.Controllers
             return Ok(result);
         }
 
-        // Patch para actualizar solo un campo, Put modifica todo el objeto
+        // DELETE: api/v1/users/{userId}
         [MapToApiVersion(1)]
-        [HttpPatch("{userId}/change-pass")]
-        public async Task<ActionResult<PasswordChangeResponse>> ChangePassword(
-            string userId, 
-            [FromBody] PasswordChangeRequest request,
-            [FromServices] IValidator<PasswordChangeRequest> validator)
+        [HttpDelete("{userId}")]
+        public async Task<ActionResult<CrudUserResponse>> DeleteUser(string userId)
         {
-            var validation = await validator.ValidateAsync(request);
+            var result = await _userService.DeleteUser(userId);
 
-            if (!validation.IsValid)
+            if (!result.Success)
             {
-                return BadRequest(validation.Errors);
+                return BadRequest(result);
             }
 
-            var result = await _userService.ChangePasswordAsync(userId, request.CurrentPassword, request.NewPassword);
-
-            var response = new PasswordChangeResponse()
-            {
-                Success = result
-            };
-
-            if (!result)
-            {
-                return BadRequest(response);
-            }
-
-            return Ok(response);
+            return Ok(result);
         }
     }
 }
