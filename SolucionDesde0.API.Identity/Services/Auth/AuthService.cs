@@ -17,6 +17,7 @@ namespace SolucionDesde0.API.Identity.Services.Auth
         private RoleManager<IdentityRole> _roleManager;
         // Para el JWT (coge info de appsettings)
         private readonly IConfiguration _configuration;
+        // Para las notificaciones
         private readonly IPublishEndpoint _publishEndpoint;
 
         public AuthService(UserManager<IdentityUser> userManeger, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IPublishEndpoint publishEndpoint)

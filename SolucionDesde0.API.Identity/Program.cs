@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using SolucionDesde0.API.Identity.Data;
+using SolucionDesde0.API.Identity.Data.Seeders;
+using SolucionDesde0.API.Identity.Services;
 using SolucionDesde0.API.Identity.Services.Auth;
 using SolucionDesde0.API.Identity.Services.User;
 using SolucionDesde0.ServiceDefaults;
@@ -23,6 +25,7 @@ builder.AddServiceDefaults();
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUserManagementService, UserManagementService>();
 
 // Para el secrets (JWT pass)
 builder.Configuration.AddUserSecrets(typeof(Program).Assembly, true);
@@ -113,7 +116,6 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -138,6 +140,8 @@ if (app.Environment.IsDevelopment())
             await roleManager.CreateAsync(new IdentityRole(role));
         }
     }
+
+    await DefaultAdminSeeder.SeedAdminUser(app.Services);
 }
 
 app.UseHttpsRedirection();

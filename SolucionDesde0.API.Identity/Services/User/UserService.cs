@@ -14,7 +14,7 @@ namespace SolucionDesde0.API.Identity.Services.User
             _logger = logger;
         }
 
-        public async Task<CreateUserResponse> CreateUser(string name, string email, string password)
+        public async Task<CrudUserResponse> CreateUser(string name, string email, string password)
         {
             var user = new IdentityUser
             {
@@ -26,7 +26,7 @@ namespace SolucionDesde0.API.Identity.Services.User
             if (!result.Succeeded)
             {
                 _logger.LogError("Error creating user {UserName}: {Errors}", name, string.Join(", ", result.Errors.Select(e => e.Description)));
-                return new CreateUserResponse
+                return new CrudUserResponse
                 {
                     Success = false,
                     Errors = result.Errors.Select(e => e.Description)
@@ -34,7 +34,7 @@ namespace SolucionDesde0.API.Identity.Services.User
             }
 
             _logger.LogInformation("User {UserName} created successfully", name);
-            return new CreateUserResponse
+            return new CrudUserResponse
             {
                 Success = true
             };
