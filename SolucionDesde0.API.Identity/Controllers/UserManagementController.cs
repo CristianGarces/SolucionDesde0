@@ -46,14 +46,14 @@ namespace SolucionDesde0.API.Gateway.Controllers
         // POST: Crear nuevo usuario
         [MapToApiVersion(1)]
         [HttpPost]
-        public async Task<ActionResult<CreateUserResponse>> CreateUser(
+        public async Task<ActionResult<CrudUserResponse>> CreateUser(
             [FromBody] CreateUserRequest request,
             [FromServices] IValidator<CreateUserRequest> validator)
         {
             var validation = await validator.ValidateAsync(request);
             if (!validation.IsValid)
             {
-                return BadRequest(new CreateUserResponse
+                return BadRequest(new CrudUserResponse
                 {
                     Success = false,
                     Errors = validation.Errors.Select(e => e.ErrorMessage)
@@ -73,7 +73,7 @@ namespace SolucionDesde0.API.Gateway.Controllers
         // PUT: Actualizar usuario completo
         [MapToApiVersion(1)]
         [HttpPut("{userId}")]
-        public async Task<ActionResult<UpdateUserResponse>> UpdateUser(
+        public async Task<ActionResult<CrudUserResponse>> UpdateUser(
             string userId,
             [FromBody] UpdateUserRequest request,
             [FromServices] IValidator<UpdateUserRequest> validator)
@@ -81,7 +81,7 @@ namespace SolucionDesde0.API.Gateway.Controllers
             var validation = await validator.ValidateAsync(request);
             if (!validation.IsValid)
             {
-                return BadRequest(new UpdateUserResponse
+                return BadRequest(new CrudUserResponse 
                 {
                     Success = false,
                     Errors = validation.Errors.Select(e => e.ErrorMessage)
@@ -101,7 +101,7 @@ namespace SolucionDesde0.API.Gateway.Controllers
         // DELETE: Eliminar usuario
         [MapToApiVersion(1)]
         [HttpDelete("{userId}")]
-        public async Task<ActionResult<DeleteUserResponse>> DeleteUser(string userId)
+        public async Task<ActionResult<CrudUserResponse>> DeleteUser(string userId)
         {
             var result = await _userManagementService.DeleteUserAsync(userId);
 

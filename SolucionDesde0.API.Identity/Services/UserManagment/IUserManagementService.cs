@@ -8,8 +8,8 @@ namespace SolucionDesde0.API.Identity.Services
     {
         Task<IEnumerable<UserResponse>> GetAllUsersAsync();
         Task<UserResponse?> GetUserByIdAsync(string userId);
-        Task<CreateUserResponse> CreateUserAsync(CreateUserRequest request);
-        Task<UpdateUserResponse> UpdateUserAsync(string userId, UpdateUserRequest request);
-        Task<DeleteUserResponse> DeleteUserAsync(string userId);
+        Task<CrudUserResponse> CreateUserAsync(CreateUserRequest request);
+        Task<CrudUserResponse> UpdateUserAsync(string userId, UpdateUserRequest request);
+        Task<CrudUserResponse> DeleteUserAsync(string userId);
     }
 }

@@ -29,7 +29,7 @@ namespace SolucionDesde0.API.Gateway.Controllers
             var validation = await validator.ValidateAsync(request);
             if (!validation.IsValid)
             {
-                return BadRequest(new CreateUserResponse
+                return BadRequest(new CrudUserResponse
                 {
                     Success = false,
                     Errors = validation.Errors.Select(e => e.ErrorMessage)
