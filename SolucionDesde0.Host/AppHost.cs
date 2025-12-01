@@ -2,7 +2,6 @@ var builder = DistributedApplication.CreateBuilder(args);
 
 // Project Api Identity
 var identity = builder.AddProject<Projects.SolucionDesde0_API_Identity>("soluciondesde0-api-identity");
-//var identity2 = builder.AddProject<Projects.SolucionDesde0_API_Identity>("soluciondesde0-api-identity2");
 
 // Project Api Gateway
 var gateway = builder.AddProject<Projects.SolucionDesde0_API_Gateway>("soluciondesde0-api-gateway");
@@ -33,6 +32,13 @@ var notifications = builder.AddProject<Projects.SolucionDesde0_Notification>("so
     .WaitFor(rabbitMq)
     .WithReference(rabbitMq);
 
+// MailServer
+var mailServer = builder
+    .AddContainer("maildev", "maildev/maildev:latest")
+    .WithLifetime(ContainerLifetime.Persistent)
+    .WithHttpEndpoint(port: 1080, targetPort: 1080, name: "web")
+    .WithEndpoint(port: 1025, targetPort: 1025, name: "smtp");
+
 // Reference Db to Identity and Enviroment
 identity
     .WaitFor(postgresDb)
@@ -40,22 +46,13 @@ identity
     .WithReference(postgresDb)
     .WithReference(rabbitMq);
 
-//identity2
-//    .WaitFor(postgresDb)
-//    .WithEnvironment("Version", "2")
-//    .WithReference(postgresDb);
-
 // Reference Identity & Redis to Gateway
 gateway
     .WaitFor(identity)
     .WithReference(identity)
     .WaitFor(redis)
     .WithReference(redis);
-//gateway.WaitFor(identity2).WithReference(identity2);
-//gateway.WaitFor(identity2).WithReference(identity2);
 
-
-//gateway.WaitFor(identity2).WithReference(identity2);
 
 
 builder.Build().Run();
