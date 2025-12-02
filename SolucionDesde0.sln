@@ -21,6 +21,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolucionDesde0.Shared", "So
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolucionDesde0.Notification", "SolucionDesde0.Notification\SolucionDesde0.Notification.csproj", "{29144534-0404-8001-482E-457D0E57EA2F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolucionDesde0.API.Product", "SolucionDesde0.API.Product\SolucionDesde0.API.Product.csproj", "{CAE5C87D-031C-4E7D-7463-6AF4554E50D0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{29144534-0404-8001-482E-457D0E57EA2F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{29144534-0404-8001-482E-457D0E57EA2F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{29144534-0404-8001-482E-457D0E57EA2F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CAE5C87D-031C-4E7D-7463-6AF4554E50D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CAE5C87D-031C-4E7D-7463-6AF4554E50D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CAE5C87D-031C-4E7D-7463-6AF4554E50D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CAE5C87D-031C-4E7D-7463-6AF4554E50D0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

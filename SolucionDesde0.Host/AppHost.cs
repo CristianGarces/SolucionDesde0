@@ -39,6 +39,11 @@ var mailServer = builder
     .WithHttpEndpoint(port: 1080, targetPort: 1080, name: "web")
     .WithEndpoint(port: 1025, targetPort: 1025, name: "smtp");
 
+// Product
+var product = builder.AddProject<Projects.SolucionDesde0_API_Product>("soluciondesde0-api-product")
+    .WaitFor(postgresDb) 
+    .WithReference(postgresDb);
+
 // Reference Db to Identity and Enviroment
 identity
     .WaitFor(postgresDb)
@@ -50,6 +55,8 @@ identity
 gateway
     .WaitFor(identity)
     .WithReference(identity)
+    .WaitFor(product)
+    .WithReference(product)
     .WaitFor(redis)
     .WithReference(redis);
 
