@@ -15,7 +15,7 @@ builder.AddServiceDefaults();
 builder.Services.AddScoped<IProductService, ProductService>();
 
 // Add PostgreSQL DbContext 
-builder.AddNpgsqlDbContext<ProductDbContext>("productdb");
+builder.AddNpgsqlDbContext<ProductDbContext>("SolucionDesde0ProductDb");
 
 // Add services to the container.
 builder.Services.AddControllers();

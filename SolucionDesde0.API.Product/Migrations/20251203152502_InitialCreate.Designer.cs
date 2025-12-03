@@ -12,7 +12,7 @@ using SolucionDesde0.API.Product.Data;
 namespace SolucionDesde0.API.Product.Migrations
 {
     [DbContext(typeof(ProductDbContext))]
-    [Migration("20251202153349_InitialCreate")]
+    [Migration("20251203152502_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />

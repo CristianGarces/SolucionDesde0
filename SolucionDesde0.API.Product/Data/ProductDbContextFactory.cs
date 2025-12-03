@@ -9,8 +9,8 @@ namespace SolucionDesde0.API.Product.Data
         {
             var optionsBuilder = new DbContextOptionsBuilder<ProductDbContext>();
 
-            // Cadena de conexion
-            optionsBuilder.UseNpgsql("Host=localhost;Port=54614;Username=postgres;Password=cpQdbh*MGTrRyc3!B(UQV5;Database=SolucionDesde0Db");
+            // Cadena de conexión para migraciones
+            optionsBuilder.UseNpgsql("Host=localhost;Port=54614;Username=postgres;Password=cpQdbh*MGTrRyc3!B(UQV5;Database=SolucionDesde0ProductDb");
 
             return new ProductDbContext(optionsBuilder.Options);
         }

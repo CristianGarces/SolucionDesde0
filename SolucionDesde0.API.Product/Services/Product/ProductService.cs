@@ -21,8 +21,8 @@ namespace SolucionDesde0.API.Product.Services.Product
             var category = await _context.Categories.FindAsync(request.CategoryId);
             if (category == null)
             {
-                _logger.LogWarning("Category with ID {CategoryId} not found", request.CategoryId);
-                throw new ArgumentException($"Category with ID {request.CategoryId} not found");
+                _logger.LogError("Category with ID {CategoryId} not found", request.CategoryId);
+                return null;
             }
 
             var product = new ProductEntity
@@ -53,16 +53,16 @@ namespace SolucionDesde0.API.Product.Services.Product
             if (product == null)
             {
                 _logger.LogWarning("Product with ID {ProductId} not found", id);
-                throw new ArgumentException($"Product with ID {id} not found");
+                return null;
             }
 
-            // Verificar nueva categoría si cambió
             if (product.CategoryId != request.CategoryId)
             {
                 var newCategory = await _context.Categories.FindAsync(request.CategoryId);
                 if (newCategory == null)
                 {
-                    throw new ArgumentException($"Category with ID {request.CategoryId} not found");
+                    _logger.LogError("Category with ID {CategoryId} not found", request.CategoryId);
+                    return null;
                 }
                 product.Category = newCategory;
             }

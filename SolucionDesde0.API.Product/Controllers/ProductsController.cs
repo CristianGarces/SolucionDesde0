@@ -54,7 +54,7 @@ namespace SolucionDesde0.API.Product.Controllers
 
         // POST: api/products
         [HttpPost]
-        [Authorize(Roles = "Admin")] 
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<ProductResponse>> CreateProduct(CreateProductRequest request)
         {
             var userId = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value
@@ -66,6 +66,12 @@ namespace SolucionDesde0.API.Product.Controllers
             }
 
             var product = await _productService.CreateProductAsync(request, userId);
+
+            if (product == null)
+            {
+                return NotFound($"Category with ID {request.CategoryId} not found");
+            }
+
             return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, product);
         }
 
@@ -75,6 +81,10 @@ namespace SolucionDesde0.API.Product.Controllers
         public async Task<ActionResult<ProductResponse>> UpdateProduct(Guid id, UpdateProductRequest request)
         {
             var product = await _productService.UpdateProductAsync(id, request);
+            if(product == null)
+            {
+                return NotFound($"Category with ID {request.CategoryId} not found");
+            }
             return Ok(product);
         }
 
