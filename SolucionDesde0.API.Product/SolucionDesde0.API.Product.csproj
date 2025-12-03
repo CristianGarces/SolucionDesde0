@@ -28,8 +28,4 @@
 	<ProjectReference Include="..\SolucionDesde0.ServiceDefaults\SolucionDesde0.ServiceDefaults.csproj" />
 </ItemGroup>
 
-<ItemGroup>
-  <Folder Include="Services\Category\" />
-</ItemGroup>
-
 </Project>

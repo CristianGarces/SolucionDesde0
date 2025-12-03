@@ -1,6 +1,6 @@
 ﻿using SolucionDesde0.API.Product.Dto;
 
-namespace SolucionDesde0.API.Product.Services.Product
+namespace SolucionDesde0.API.Product.Services
 {
     public interface IProductService
     {

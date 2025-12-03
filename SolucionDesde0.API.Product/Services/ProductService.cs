@@ -3,7 +3,7 @@ using SolucionDesde0.API.Product.Data;
 using SolucionDesde0.API.Product.Dto;
 using SolucionDesde0.API.Product.Models;
 
-namespace SolucionDesde0.API.Product.Services.Product
+namespace SolucionDesde0.API.Product.Services
 {
     public class ProductService : IProductService
     {

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SolucionDesde0.API.Product.Data;
-using SolucionDesde0.API.Product.Services.Product;
+using SolucionDesde0.API.Product.Services;
 using SolucionDesde0.ServiceDefaults;
 using System.Text;
 

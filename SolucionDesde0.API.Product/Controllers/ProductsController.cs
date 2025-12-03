@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SolucionDesde0.API.Product.Dto;
-using SolucionDesde0.API.Product.Services.Product;
+using SolucionDesde0.API.Product.Services;
 using System.IdentityModel.Tokens.Jwt;
 
 namespace SolucionDesde0.API.Product.Controllers
