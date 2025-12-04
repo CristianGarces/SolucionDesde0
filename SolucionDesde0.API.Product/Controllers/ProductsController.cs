@@ -9,6 +9,7 @@ namespace SolucionDesde0.API.Product.Controllers
 {
     [ApiController]
     [ApiVersion("1.0")]
+    [Authorize]
     [Route("api/v{v:apiVersion}/[controller]")]
     public class ProductsController : ControllerBase
     {
@@ -21,7 +22,6 @@ namespace SolucionDesde0.API.Product.Controllers
 
         // GET: api/products
         [HttpGet]
-        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<ProductResponse>>> GetAllProducts()
         {
             var products = await _productService.GetAllProductsAsync();
@@ -30,7 +30,6 @@ namespace SolucionDesde0.API.Product.Controllers
 
         // GET: api/products/{id}
         [HttpGet("{id}")]
-        [AllowAnonymous]
         public async Task<ActionResult<ProductResponse>> GetProductById(Guid id)
         {
             var product = await _productService.GetProductByIdAsync(id);
@@ -45,7 +44,6 @@ namespace SolucionDesde0.API.Product.Controllers
 
         // GET: api/products/category/{categoryId}
         [HttpGet("category/{categoryId}")]
-        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<ProductResponse>>> GetProductsByCategory(Guid categoryId)
         {
             var products = await _productService.GetProductsByCategoryAsync(categoryId);

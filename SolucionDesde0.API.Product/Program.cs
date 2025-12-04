@@ -1,9 +1,12 @@
 using Asp.Versioning;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SolucionDesde0.API.Product.Data;
+using SolucionDesde0.API.Product.Dto;
 using SolucionDesde0.API.Product.Services;
+using SolucionDesde0.API.Product.Validations.CategoriesVal;
 using SolucionDesde0.ServiceDefaults;
 using System.Text;
 
@@ -13,6 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
 
 // Add PostgreSQL DbContext 
 builder.AddNpgsqlDbContext<ProductDbContext>("SolucionDesde0ProductDb");
@@ -21,6 +25,11 @@ builder.AddNpgsqlDbContext<ProductDbContext>("SolucionDesde0ProductDb");
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
 
+//Validators
+builder.Services.AddScoped<IValidator<CreateCategoryRequest>, CreateCategoryRequestValidator>();
+builder.Services.AddScoped<IValidator<UpdateCategoryRequest>, UpdateCategoryRequestValidator>();
+
+// JWT Authentication
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
