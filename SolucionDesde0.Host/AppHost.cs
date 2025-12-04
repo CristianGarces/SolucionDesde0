@@ -16,6 +16,7 @@ var redis = builder.AddRedis("redis")
 // Databases for microservices
 var identityDb = postgres.AddDatabase("SolucionDesde0Db");
 var productDb = postgres.AddDatabase("SolucionDesde0ProductDb");
+var ordersDb = postgres.AddDatabase("SolucionDesde0OrdersDb");
 
 // RabbitMq
 var rabbitMq = builder.AddRabbitMQ("rabbitmq")
@@ -42,6 +43,11 @@ var product = builder.AddProject<Projects.SolucionDesde0_API_Product>("soluciond
     .WaitFor(productDb)
     .WithReference(productDb);
 
+var orders = builder.AddProject<Projects.SolucionDesde0_Api_Orders>("soluciondesde0-api-orders")
+    .WaitFor(ordersDb)
+    .WithReference(ordersDb);
+
+
 // Notifications Service
 var notifications = builder.AddProject<Projects.SolucionDesde0_Notification>("soluciondesde0-notification")
     .WaitFor(rabbitMq)
@@ -52,7 +58,10 @@ var gateway = builder.AddProject<Projects.SolucionDesde0_API_Gateway>("soluciond
     .WithReference(identity)
     .WaitFor(product)
     .WithReference(product)
+    .WaitFor(orders)
+    .WithReference(orders)
     .WaitFor(redis)
     .WithReference(redis);
+
 
 builder.Build().Run();

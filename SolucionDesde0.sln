@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolucionDesde0.API.Product"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PokeApiConsole", "PokeApiConsole\PokeApiConsole.csproj", "{16F61E1F-9E24-4E66-BABB-881DAA9F6D62}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolucionDesde0.Api.Orders", "SolucionDesde0.Api.Orders\SolucionDesde0.Api.Orders.csproj", "{4037246B-42AD-A59C-1F22-B3CEC8714EAA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -63,6 +65,10 @@ Global
 		{16F61E1F-9E24-4E66-BABB-881DAA9F6D62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{16F61E1F-9E24-4E66-BABB-881DAA9F6D62}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{16F61E1F-9E24-4E66-BABB-881DAA9F6D62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4037246B-42AD-A59C-1F22-B3CEC8714EAA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4037246B-42AD-A59C-1F22-B3CEC8714EAA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4037246B-42AD-A59C-1F22-B3CEC8714EAA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4037246B-42AD-A59C-1F22-B3CEC8714EAA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
