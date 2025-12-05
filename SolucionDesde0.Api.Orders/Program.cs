@@ -23,12 +23,6 @@ builder.AddNpgsqlDbContext<OrdersDbContext>("SolucionDesde0OrdersDb");
 
 builder.Services.AddControllers();
 
-builder.Services.AddHttpClient("Products", client =>
-{
-    client.BaseAddress = new Uri("https://localhost:7227/");
-    client.DefaultRequestHeaders.Add("Accept", "application/json");
-});
-
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
