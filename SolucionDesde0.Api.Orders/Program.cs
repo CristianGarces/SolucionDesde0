@@ -1,7 +1,13 @@
+using Asp.Versioning;
+using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using SolucionDesde0.Api.Orders.Services;
 using SolucionDesde0.API.Orders.Data;
+using SolucionDesde0.API.Orders.Services;
+using SolucionDesde0.API.Orders.Validations;
 using SolucionDesde0.ServiceDefaults;
 using System.Text;
 
@@ -11,11 +17,25 @@ builder.AddServiceDefaults();
 
 builder.AddNpgsqlDbContext<OrdersDbContext>("SolucionDesde0OrdersDb");
 
+
+
 // Add services to the container.
 
 builder.Services.AddControllers();
+
+builder.Services.AddHttpClient("Products", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7227/");
+    client.DefaultRequestHeaders.Add("Accept", "application/json");
+});
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddScoped<IOrderService, OrderService>();
+
+builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderRequestValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<UpdateOrderStatusRequestValidator>();
 
 // JWT Authentication
 builder.Services.AddAuthentication(options =>
@@ -35,6 +55,23 @@ builder.Services.AddAuthentication(options =>
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JWT:SecretKey").Value!))
             };
         });
+
+// Versioning
+builder.Services.AddApiVersioning(options =>
+{
+    options.DefaultApiVersion = new ApiVersion(1);
+    options.ReportApiVersions = true;
+    options.AssumeDefaultVersionWhenUnspecified = true;
+    options.ApiVersionReader = ApiVersionReader.Combine(
+        new UrlSegmentApiVersionReader(),
+        new HeaderApiVersionReader("X-Api-Version"));
+})
+.AddMvc() 
+.AddApiExplorer(options =>
+{
+    options.GroupNameFormat = "'v'V";
+    options.SubstituteApiVersionInUrl = true;
+});
 
 var app = builder.Build();
 
