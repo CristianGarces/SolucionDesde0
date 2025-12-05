@@ -61,6 +61,22 @@ namespace SolucionDesde0.API.Orders.Services
                 TotalAmount = 0
             };
 
+            foreach (var item in request.Items)
+            {
+                var or = new OrderItem
+                {
+                    Order = order,
+                    Id = Guid.NewGuid(),
+                    OrderId = order.Id ,
+                   ProductId = item.ProductId,
+                   Quantity = item.Quantity,
+                   ProductName = item.ProductName
+                };
+
+                order.Items.Add(or);
+
+            }
+
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
 
@@ -101,7 +117,7 @@ namespace SolucionDesde0.API.Orders.Services
                     o.Status.ToString(),
                     o.TotalAmount,
                     o.Items.Count,
-                    o.CreatedAt))
+                    o.CreatedAt.ToLocalTime()))
                 .ToListAsync();
 
             return orders;
@@ -158,7 +174,7 @@ namespace SolucionDesde0.API.Orders.Services
             order.ShippingAddress,
             order.ShippingCity,
             order.Notes,
-            order.CreatedAt,
+            order.CreatedAt.ToLocalTime(),
             order.Items.Select(i => new OrderItemResponse(
                 i.Id, i.ProductId, i.ProductName, i.UnitPrice, i.Quantity, i.Subtotal)));
     }

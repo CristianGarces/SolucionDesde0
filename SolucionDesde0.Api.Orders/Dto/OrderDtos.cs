@@ -39,7 +39,8 @@ namespace SolucionDesde0.Api.Orders.Dto
 
         public record CreateOrderItemRequest(
             Guid ProductId,
-            int Quantity);
+            int Quantity,
+            string ProductName);
 
         public record UpdateOrderStatusRequest(OrderStatus Status);
     }
