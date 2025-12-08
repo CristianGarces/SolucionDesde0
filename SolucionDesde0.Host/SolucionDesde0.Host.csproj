@@ -12,6 +12,7 @@
 
   <ItemGroup>
 	  <PackageReference Include="Aspire.Hosting.AppHost" />
+	  <PackageReference Include="Aspire.Hosting.NodeJs" />
 	  <PackageReference Include="Aspire.Hosting.PostgreSQL" />
 	  <PackageReference Include="Aspire.Hosting.RabbitMQ" />
 	  <PackageReference Include="Aspire.Hosting.Redis" />
@@ -24,6 +25,7 @@
     <ProjectReference Include="..\SolucionDesde0.Api.Orders\SolucionDesde0.Api.Orders.csproj" />
     <ProjectReference Include="..\SolucionDesde0.API.Product\SolucionDesde0.API.Product.csproj" />
     <ProjectReference Include="..\SolucionDesde0.Notification\SolucionDesde0.Notification.csproj" />
+    <ProjectReference Include="..\SolucionDesde0.web\soluciondesde0.web.client\soluciondesde0.web.client.esproj" />
   </ItemGroup>
 
 </Project>

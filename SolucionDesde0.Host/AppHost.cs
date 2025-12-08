@@ -63,5 +63,9 @@ var gateway = builder.AddProject<Projects.SolucionDesde0_API_Gateway>("soluciond
     .WaitFor(redis)
     .WithReference(redis);
 
+var frontend = builder.AddNpmApp("frontend", "../SolucionDesde0.web/soluciondesde0.web.client", "dev")
+    .WithReference(gateway)
+    .WaitFor(gateway);
+
 
 builder.Build().Run();
