@@ -58,24 +58,28 @@ namespace SolucionDesde0.API.Orders.Services
                 Notes = request.Notes,
                 Status = OrderStatus.Pending,
                 Items = new List<OrderItem>(),
-                TotalAmount = 0
             };
+
+            decimal totalAmount = 0;
 
             foreach (var item in request.Items)
             {
-                var or = new OrderItem
+                var orderItem = new OrderItem
                 {
                     Order = order,
                     Id = Guid.NewGuid(),
-                    OrderId = order.Id ,
-                   ProductId = item.ProductId,
-                   Quantity = item.Quantity,
-                   ProductName = item.ProductName
+                    OrderId = order.Id,
+                    ProductId = item.ProductId,
+                    Quantity = item.Quantity,
+                    UnitPrice = item.UnitPrice,
+                    ProductName = item.ProductName
                 };
 
-                order.Items.Add(or);
-
+                order.Items.Add(orderItem);
+                totalAmount += orderItem.Subtotal;
             }
+
+            order.TotalAmount = totalAmount;
 
             _context.Orders.Add(order);
             await _context.SaveChangesAsync();
