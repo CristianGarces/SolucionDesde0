@@ -56,11 +56,25 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             };
         });
 
+// Para peticiones del front
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("ReactApp",
+        policy =>
+        {
+            policy.WithOrigins("http://localhost:5173")
+                  .AllowAnyHeader()
+                  .AllowAnyMethod()
+                  .AllowCredentials();
+        });
+});
+
 var app = builder.Build();
 // Middleware
 app.UseHttpsRedirection();
 
 app.UseCors();
+app.UseCors("ReactApp");
 
 app.UseAuthentication();
 
