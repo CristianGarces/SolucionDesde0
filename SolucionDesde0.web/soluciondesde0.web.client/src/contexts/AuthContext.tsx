@@ -63,7 +63,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
             const response = await authService.register({ name, email, password });
 
             if (response.succeeded) {
-                return { success: true, message: 'Registro exitoso. Por favor inicia sesión.' };
+                return { success: true, message: 'Registro exitoso. Por favor inicia sesion.' };
             } else {
                 throw new Error(response.errors?.join(', ') || 'Registration failed');
             }

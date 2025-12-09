@@ -22,13 +22,13 @@ const Layout = () => {
                                     Hola, {user?.name}
                                 </Typography>
                                 <Button color="inherit" onClick={logout}>
-                                    Cerrar Sesión
+                                    Cerrar Sesion
                                 </Button>
                             </>
                         ) : (
                             <>
                                 <Button color="inherit" component={Link} to="/login">
-                                    Iniciar Sesión
+                                    Iniciar Sesion
                                 </Button>
                                 <Button color="inherit" component={Link} to="/register">
                                     Registrarse

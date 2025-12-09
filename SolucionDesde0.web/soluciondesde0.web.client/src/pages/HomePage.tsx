@@ -15,10 +15,10 @@ const HomePage = () => {
                 {isAuthenticated ? (
                     <>
                         <Typography variant="h4" color="secondary" gutterBottom>
-                            ¡Bienvenido, {user?.name}!
+                            Bienvenido, {user?.name}!
                         </Typography>
                         <Typography variant="h5" paragraph>
-                            Has iniciado sesión correctamente en tu tienda Marvel.
+                            Has iniciado sesion correctamente en tu tienda Marvel.
                         </Typography>
 
                         <Box sx={{ mt: 6, display: 'flex', gap: 3, justifyContent: 'center' }}>
@@ -29,13 +29,13 @@ const HomePage = () => {
                                 Mi Perfil
                             </Button>
                             <Button variant="contained" color="error" size="large" onClick={logout}>
-                                Cerrar Sesión
+                                Cerrar Sesion
                             </Button>
                         </Box>
                     </>
                 ) : (
                     <Typography variant="h5" color="error">
-                        Error: No deberías estar aquí sin autenticación
+                        Error: No deberias estar aqui sin autenticacion
                     </Typography>
                 )}
             </Box>

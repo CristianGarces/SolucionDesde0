@@ -53,7 +53,7 @@ const LoginPage = () => {
       await login(formData.email, formData.password);
       navigate('/');
     } catch (err: unknown) {
-      let errorMessage = 'Error al iniciar sesión. Verifica tus credenciales.';
+      let errorMessage = 'Error al iniciar sesion. Verifica tus credenciales.';
       
       if (err instanceof Error) {
         errorMessage = err.message;
@@ -97,7 +97,7 @@ const LoginPage = () => {
           </Box>
           
           <Typography component="h1" variant="h5">
-            Iniciar Sesión
+            Iniciar Sesion
           </Typography>
           
           {successMessage && (
@@ -132,7 +132,7 @@ const LoginPage = () => {
               required
               fullWidth
               name="password"
-              label="Contraseña"
+              label="Contrasena"
               type="password"
               id="password"
               autoComplete="current-password"
@@ -148,13 +148,13 @@ const LoginPage = () => {
               sx={{ mt: 3, mb: 2 }}
               disabled={isLoading || authLoading}
             >
-              {isLoading ? <CircularProgress size={24} /> : 'Iniciar Sesión'}
+              {isLoading ? <CircularProgress size={24} /> : 'Iniciar Sesion'}
             </Button>
             
             <Box sx={{ textAlign: 'center' }}>
               <Link to="/register" style={{ textDecoration: 'none' }}>
                 <Typography variant="body2" color="primary">
-                  ¿No tienes cuenta? Regístrate
+                  No tienes cuenta? Registrate
                 </Typography>
               </Link>
             </Box>
@@ -205,7 +205,7 @@ const LoginPage = () => {
               textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
             }}
           >
-            Tu tienda oficial de cómics y merchandising
+            Tu tienda oficial de comics y merchandising
           </Typography>
         </Box>
       </Grid>

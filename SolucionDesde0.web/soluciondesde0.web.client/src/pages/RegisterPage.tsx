@@ -58,15 +58,15 @@ const RegisterPage = () => {
         }
 
         if (!formData.password) {
-            errors.password = 'La contraseña es requerida';
+            errors.password = 'La contrasena es requerida';
             isValid = false;
         } else if (formData.password.length < 6) {
-            errors.password = 'La contraseña debe tener al menos 6 caracteres';
+            errors.password = 'La contrasena debe tener al menos 6 caracteres';
             isValid = false;
         }
 
         if (formData.password !== formData.confirmPassword) {
-            errors.confirmPassword = 'Las contraseñas no coinciden';
+            errors.confirmPassword = 'Las contrasenas no coinciden';
             isValid = false;
         }
 
@@ -105,7 +105,7 @@ const RegisterPage = () => {
             if (result.success) {
                 navigate('/login', {
                     state: {
-                        message: result.message || '¡Registro exitoso! Por favor inicia sesión.',
+                        message: result.message || 'Registro exitoso! Por favor inicia sesion.',
                         email: formData.email
                     }
                 });
@@ -170,7 +170,7 @@ const RegisterPage = () => {
                             textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
                         }}
                     >
-                        Únete a nuestra comunidad
+                        Unete a nuestra comunidad
                     </Typography>
                     <Typography
                         variant="body1"
@@ -218,7 +218,7 @@ const RegisterPage = () => {
                     </Typography>
 
                     <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 3 }}>
-                        Regístrate para comenzar a comprar
+                        Registrate para comenzar a comprar
                     </Typography>
 
                     {error && (
@@ -264,7 +264,7 @@ const RegisterPage = () => {
                             required
                             fullWidth
                             name="password"
-                            label="Contraseña"
+                            label="Contrasena"
                             type="password"
                             id="password"
                             autoComplete="new-password"
@@ -280,7 +280,7 @@ const RegisterPage = () => {
                             required
                             fullWidth
                             name="confirmPassword"
-                            label="Confirmar contraseña"
+                            label="Confirmar contrasena"
                             type="password"
                             id="confirmPassword"
                             value={formData.confirmPassword}
@@ -303,7 +303,7 @@ const RegisterPage = () => {
                         <Box sx={{ textAlign: 'center' }}>
                             <Link to="/login" style={{ textDecoration: 'none' }}>
                                 <Typography variant="body2" color="primary">
-                                    ¿Ya tienes cuenta? Inicia sesión
+                                    Ya tienes cuenta? Inicia sesion
                                 </Typography>
                             </Link>
                         </Box>
