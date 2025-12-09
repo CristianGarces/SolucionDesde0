@@ -26,11 +26,16 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
     (response) => response,
     (error) => {
+        // Solo manejar token expirado (401) cuando ya estás autenticado
         if (error.response?.status === 401) {
-            // Token expirado o inválido
-            localStorage.removeItem('auth_token');
-            localStorage.removeItem('user_info');
-            window.location.href = '/login';
+            const currentPath = window.location.pathname;
+
+            // Solo redirigir si no estamos en la página de login
+            if (currentPath !== '/login') {
+                localStorage.removeItem('auth_token');
+                localStorage.removeItem('user_info');
+                window.location.href = '/login';
+            }
         }
         return Promise.reject(error);
     }

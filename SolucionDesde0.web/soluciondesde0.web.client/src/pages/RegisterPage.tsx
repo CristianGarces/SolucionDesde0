@@ -43,26 +43,57 @@ const RegisterPage = () => {
         };
         let isValid = true;
 
+        // Validar nombre
         if (!formData.name.trim()) {
             errors.name = 'El nombre es requerido';
             isValid = false;
+        } else if (formData.name.trim().length < 2) {
+            errors.name = 'El nombre debe tener al menos 2 caracteres';
+            isValid = false;
         }
 
+        // Validar email
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!formData.email) {
             errors.email = 'El email es requerido';
             isValid = false;
         } else if (!emailRegex.test(formData.email)) {
-            errors.email = 'Email no válido';
+            errors.email = 'Email no valido (ejemplo: usuario@dominio.com)';
             isValid = false;
         }
 
+        // Validar contraseña (REGLAS COMPLETAS)
         if (!formData.password) {
             errors.password = 'La contrasena es requerida';
             isValid = false;
-        } else if (formData.password.length < 6) {
-            errors.password = 'La contrasena debe tener al menos 6 caracteres';
-            isValid = false;
+        } else {
+            const password = formData.password;
+            const requirements: string[] = [];
+
+            if (password.length < 6) {
+                requirements.push('6 caracteres');
+            }
+
+            if (!/[A-Z]/.test(password)) {
+                requirements.push('una mayuscula (A-Z)');
+            }
+  
+            if (!/[a-z]/.test(password)) {
+                requirements.push('una minuscula (a-z)');
+            }
+
+            if (!/\d/.test(password)) {
+                requirements.push('un numero (0-9)');
+            }
+
+            if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+                requirements.push('un caracter especial (!@#$%^&*)');
+            }
+
+            if (requirements.length > 0) {
+                errors.password = `La contrasena debe contener: ${requirements.join(', ')}`;
+                isValid = false;
+            }
         }
 
         if (formData.password !== formData.confirmPassword) {
