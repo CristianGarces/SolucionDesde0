@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolucionDesde0.Api.Orders",
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "soluciondesde0.web.client", "SolucionDesde0.web\soluciondesde0.web.client\soluciondesde0.web.client.esproj", "{DDD938E4-15D7-7907-7B57-AD182526E72E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SolucionDesde0.Api.Identity.Test", "SolucionDesde0.Api.Identity.Test\SolucionDesde0.Api.Identity.Test.csproj", "{097F60C2-FB0A-41DB-80D4-88D50EEE37E1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -75,6 +77,10 @@ Global
 		{DDD938E4-15D7-7907-7B57-AD182526E72E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DDD938E4-15D7-7907-7B57-AD182526E72E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DDD938E4-15D7-7907-7B57-AD182526E72E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{097F60C2-FB0A-41DB-80D4-88D50EEE37E1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{097F60C2-FB0A-41DB-80D4-88D50EEE37E1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{097F60C2-FB0A-41DB-80D4-88D50EEE37E1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{097F60C2-FB0A-41DB-80D4-88D50EEE37E1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

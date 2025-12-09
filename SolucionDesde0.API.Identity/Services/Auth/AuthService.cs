@@ -14,16 +14,14 @@ namespace SolucionDesde0.API.Identity.Services.Auth
     public class AuthService : IAuthService
     {
         private UserManager<IdentityUser> _userManeger;
-        private RoleManager<IdentityRole> _roleManager;
         // Para el JWT (coge info de appsettings)
         private readonly IConfiguration _configuration;
         // Para las notificaciones
         private readonly IPublishEndpoint _publishEndpoint;
 
-        public AuthService(UserManager<IdentityUser> userManeger, RoleManager<IdentityRole> roleManager, IConfiguration configuration, IPublishEndpoint publishEndpoint)
+        public AuthService(UserManager<IdentityUser> userManeger, IConfiguration configuration, IPublishEndpoint publishEndpoint)
         {
             _userManeger = userManeger;
-            _roleManager = roleManager;
             _configuration = configuration;
             _publishEndpoint = publishEndpoint;
         }
