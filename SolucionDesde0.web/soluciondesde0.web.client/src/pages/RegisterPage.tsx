@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import {
-    Container,
     Paper,
     TextField,
     Button,
@@ -10,7 +9,8 @@ import {
     Box,
     Alert,
     CircularProgress,
-    Grid
+    Grid,
+    CssBaseline
 } from '@mui/material';
 import { PersonAddOutlined } from '@mui/icons-material';
 
@@ -106,7 +106,7 @@ const RegisterPage = () => {
                 navigate('/login', {
                     state: {
                         message: result.message || '¡Registro exitoso! Por favor inicia sesión.',
-                        email: formData.email // Pre-llenar email en login
+                        email: formData.email
                     }
                 });
             }
@@ -124,23 +124,77 @@ const RegisterPage = () => {
     };
 
     return (
-        <Container component="main" maxWidth="sm">
-            <Box
+        <Grid container component="main" sx={{ height: '100vh' }}>
+            <CssBaseline />
+
+            {/* Lado izquierdo - MARVEL SHOP */}
+            <Grid
+                item
+                xs={false}
+                sm={4}
+                md={7}
                 sx={{
-                    marginTop: 8,
+                    backgroundImage: 'linear-gradient(45deg, #1976d2 30%, #2196f3 90%)',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundColor: (t) =>
+                        t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
                     display: 'flex',
-                    flexDirection: 'column',
                     alignItems: 'center',
+                    justifyContent: 'center',
                 }}
             >
-                <Paper
-                    elevation={3}
+                <Box
                     sx={{
-                        padding: 4,
+                        textAlign: 'center',
+                        color: 'white',
+                    }}
+                >
+                    <Typography
+                        component="h1"
+                        variant="h1"
+                        sx={{
+                            fontWeight: 'bold',
+                            textShadow: '3px 3px 6px rgba(0,0,0,0.3)',
+                            letterSpacing: '0.2em',
+                        }}
+                    >
+                        MARVEL SHOP
+                    </Typography>
+                    <Typography
+                        variant="h5"
+                        sx={{
+                            mt: 2,
+                            fontStyle: 'italic',
+                            textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
+                        }}
+                    >
+                        Únete a nuestra comunidad
+                    </Typography>
+                    <Typography
+                        variant="body1"
+                        sx={{
+                            mt: 4,
+                            maxWidth: '500px',
+                            mx: 'auto',
+                            textShadow: '1px 1px 2px rgba(0,0,0,0.3)',
+                        }}
+                    >
+                        Accede a productos exclusivos, ofertas especiales y el mejor merchandising de Marvel.
+                    </Typography>
+                </Box>
+            </Grid>
+
+            {/* Lado derecho - Formulario de Registro */}
+            <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
+                <Box
+                    sx={{
+                        my: 8,
+                        mx: 4,
                         display: 'flex',
                         flexDirection: 'column',
                         alignItems: 'center',
-                        width: '100%',
                     }}
                 >
                     <Box
@@ -160,11 +214,11 @@ const RegisterPage = () => {
                     </Box>
 
                     <Typography component="h1" variant="h5">
-                        Registrarse
+                        Crear Cuenta
                     </Typography>
 
                     <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 3 }}>
-                        Crea una cuenta para comenzar a comprar
+                        Regístrate para comenzar a comprar
                     </Typography>
 
                     {error && (
@@ -174,73 +228,67 @@ const RegisterPage = () => {
                     )}
 
                     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2, width: '100%' }}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    id="name"
-                                    label="Nombre completo"
-                                    name="name"
-                                    autoComplete="name"
-                                    autoFocus
-                                    value={formData.name}
-                                    onChange={handleChange}
-                                    error={!!formErrors.name}
-                                    helperText={formErrors.name}
-                                    disabled={isLoading || authLoading}
-                                />
-                            </Grid>
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="name"
+                            label="Nombre completo"
+                            name="name"
+                            autoComplete="name"
+                            autoFocus
+                            value={formData.name}
+                            onChange={handleChange}
+                            error={!!formErrors.name}
+                            helperText={formErrors.name}
+                            disabled={isLoading || authLoading}
+                        />
 
-                            <Grid item xs={12}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    id="email"
-                                    label="Email"
-                                    name="email"
-                                    autoComplete="email"
-                                    value={formData.email}
-                                    onChange={handleChange}
-                                    error={!!formErrors.email}
-                                    helperText={formErrors.email}
-                                    disabled={isLoading || authLoading}
-                                />
-                            </Grid>
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            id="email"
+                            label="Email"
+                            name="email"
+                            autoComplete="email"
+                            value={formData.email}
+                            onChange={handleChange}
+                            error={!!formErrors.email}
+                            helperText={formErrors.email}
+                            disabled={isLoading || authLoading}
+                        />
 
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    name="password"
-                                    label="Contraseña"
-                                    type="password"
-                                    id="password"
-                                    autoComplete="new-password"
-                                    value={formData.password}
-                                    onChange={handleChange}
-                                    error={!!formErrors.password}
-                                    helperText={formErrors.password}
-                                    disabled={isLoading || authLoading}
-                                />
-                            </Grid>
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="password"
+                            label="Contraseña"
+                            type="password"
+                            id="password"
+                            autoComplete="new-password"
+                            value={formData.password}
+                            onChange={handleChange}
+                            error={!!formErrors.password}
+                            helperText={formErrors.password}
+                            disabled={isLoading || authLoading}
+                        />
 
-                            <Grid item xs={12} sm={6}>
-                                <TextField
-                                    required
-                                    fullWidth
-                                    name="confirmPassword"
-                                    label="Confirmar contraseña"
-                                    type="password"
-                                    id="confirmPassword"
-                                    value={formData.confirmPassword}
-                                    onChange={handleChange}
-                                    error={!!formErrors.confirmPassword}
-                                    helperText={formErrors.confirmPassword}
-                                    disabled={isLoading || authLoading}
-                                />
-                            </Grid>
-                        </Grid>
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            name="confirmPassword"
+                            label="Confirmar contraseña"
+                            type="password"
+                            id="confirmPassword"
+                            value={formData.confirmPassword}
+                            onChange={handleChange}
+                            error={!!formErrors.confirmPassword}
+                            helperText={formErrors.confirmPassword}
+                            disabled={isLoading || authLoading}
+                        />
 
                         <Button
                             type="submit"
@@ -260,9 +308,9 @@ const RegisterPage = () => {
                             </Link>
                         </Box>
                     </Box>
-                </Paper>
-            </Box>
-        </Container>
+                </Box>
+            </Grid>
+        </Grid>
     );
 };
 

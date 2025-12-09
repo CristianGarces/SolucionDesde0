@@ -7,11 +7,11 @@ const Layout = () => {
 
     return (
         <>
-            <AppBar position="static">
+            <AppBar position="static" sx={{ backgroundColor: '#d32f2f' }}>
                 <Toolbar>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+                    <Typography variant="h6" component="div" sx={{ flexGrow: 1, fontWeight: 'bold' }}>
                         <Link to="/" style={{ color: 'white', textDecoration: 'none' }}>
-                            Mi E-Commerce
+                            MARVEL SHOP
                         </Link>
                     </Typography>
 
@@ -22,13 +22,13 @@ const Layout = () => {
                                     Hola, {user?.name}
                                 </Typography>
                                 <Button color="inherit" onClick={logout}>
-                                    Cerrar Sesion
+                                    Cerrar Sesión
                                 </Button>
                             </>
                         ) : (
                             <>
                                 <Button color="inherit" component={Link} to="/login">
-                                    Iniciar Sesion
+                                    Iniciar Sesión
                                 </Button>
                                 <Button color="inherit" component={Link} to="/register">
                                     Registrarse
