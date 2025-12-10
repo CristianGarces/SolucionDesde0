@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import NotFoundPage from './pages/NotFoundPage';
+import ProfilePage from './pages/ProfilePage';
 
 const AppContent = () => {
     const { isAuthenticated, loading } = useAuth();
@@ -32,6 +33,14 @@ const AppContent = () => {
 
             <Route path="/register" element={
                 isAuthenticated ? <Navigate to="/" /> : <RegisterPage />
+            } />
+
+            <Route path="/profile" element={
+                isAuthenticated ? (
+                    <MainLayout>
+                        <ProfilePage />
+                    </MainLayout>
+                ) : <Navigate to="/login" />
             } />
 
             {/* Ruta 404 */}

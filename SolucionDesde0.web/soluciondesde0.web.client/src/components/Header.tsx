@@ -17,6 +17,10 @@ const Header = () => {
         navigate('/login');
     };
 
+    const handleHome = () => {
+        navigate('/');
+    };
+
     return (
         <AppBar
             position="fixed"
@@ -33,12 +37,19 @@ const Header = () => {
                 <Typography
                     variant="h5"
                     component="div"
+                    onClick={handleHome}
                     sx={{
                         flexGrow: 1,
                         textAlign: 'center',
                         fontWeight: 'bold',
                         letterSpacing: '0.1em',
-                        textShadow: '1px 1px 2px rgba(0,0,0,0.3)'
+                        textShadow: '1px 1px 2px rgba(0,0,0,0.3)',
+                        cursor: 'pointer',
+                        '&:hover': {
+                            opacity: 0.9,
+                            transform: 'scale(1.02)',
+                            transition: 'transform 0.2s'
+                        }
                     }}
                 >
                     MARVEL SHOP
