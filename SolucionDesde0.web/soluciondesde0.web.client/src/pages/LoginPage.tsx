@@ -57,7 +57,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 
         if (err instanceof Error) {
             if (err.message.includes('Network Error')) {
-                errorMessage = 'Error de conexión. Verifica tu internet.';
+                errorMessage = 'Error de conexion.';
             }
             else if (err.message.includes('400') || err.message.includes('401')) {
                 errorMessage = 'Credenciales incorrectas';
