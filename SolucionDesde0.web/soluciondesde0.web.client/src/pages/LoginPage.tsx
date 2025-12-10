@@ -44,34 +44,34 @@ const LoginPage = () => {
     setSuccessMessage(null);
   };
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError(null);
-        setIsLoading(true);
+const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setIsLoading(true);
 
-        try {
-            await login(formData.email, formData.password);
-            navigate('/');
-        } catch (err: unknown) {
-            let errorMessage = 'Credenciales incorrectas';
+    try {
+        await login(formData.email, formData.password);
+        navigate('/');
+    } catch (err: unknown) {
+        let errorMessage = 'Credenciales incorrectas';
 
-            if (err instanceof Error) {
-                if (err.message.includes('Network Error')) {
-                    errorMessage = 'Error de conexión. Verifica tu internet.';
-                }
-                else if (err.message.includes('400') || err.message.includes('401')) {
-                    errorMessage = 'Credenciales incorrectas';
-                }
-                else if (err.message) {
-                    errorMessage = 'Error al iniciar sesión. Intenta nuevamente.';
-                }
+        if (err instanceof Error) {
+            if (err.message.includes('Network Error')) {
+                errorMessage = 'Error de conexión. Verifica tu internet.';
             }
-
-            setError(errorMessage);
-        } finally {
-            setIsLoading(false);
+            else if (err.message.includes('400') || err.message.includes('401')) {
+                errorMessage = 'Credenciales incorrectas';
+            }
+            else if (err.message) {
+                errorMessage = 'Error al iniciar sesión. Intenta nuevamente.';
+            }
         }
-    };
+
+        setError(errorMessage);
+    } finally {
+        setIsLoading(false);
+    }
+};
 
   return (
     <Grid container component="main" sx={{ height: '100vh' }}>

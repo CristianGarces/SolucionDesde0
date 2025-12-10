@@ -8,10 +8,10 @@ const NotFoundPage = () => {
                 404
             </Typography>
             <Typography variant="h4" gutterBottom>
-                Página no encontrada
+                Pagina no encontrada
             </Typography>
             <Typography variant="body1" paragraph>
-                La página que estás buscando no existe.
+                La pagina que estas buscando no existe.
             </Typography>
             <Button variant="contained" component={Link} to="/">
                 Volver al Inicio

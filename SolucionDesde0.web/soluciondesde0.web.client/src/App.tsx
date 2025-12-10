@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
 import { useAuth } from './hooks/useAuth';
-import Layout from './components/Layout';
+import MainLayout from './components/MainLayout';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
@@ -16,9 +16,13 @@ const AppContent = () => {
 
     return (
         <Routes>
-            {/* Si NO está autenticado, redirigir a /login */}
+            {/* Ruta principal - Con MainLayout si está autenticado */}
             <Route path="/" element={
-                isAuthenticated ? <HomePage /> : <Navigate to="/login" />
+                isAuthenticated ? (
+                    <MainLayout>
+                        <HomePage />
+                    </MainLayout>
+                ) : <Navigate to="/login" />
             } />
 
             {/* Rutas públicas sin layout */}
@@ -29,13 +33,6 @@ const AppContent = () => {
             <Route path="/register" element={
                 isAuthenticated ? <Navigate to="/" /> : <RegisterPage />
             } />
-
-            {/* Rutas protegidas con layout */}
-            <Route path="/dashboard" element={
-                isAuthenticated ? <Layout /> : <Navigate to="/login" />
-            }>
-                <Route index element={<HomePage />} />
-            </Route>
 
             {/* Ruta 404 */}
             <Route path="*" element={<NotFoundPage />} />
