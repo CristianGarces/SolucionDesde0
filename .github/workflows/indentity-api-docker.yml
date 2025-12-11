@@ -16,7 +16,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository_owner }}/soluciondesde0-identity-api
+  IMAGE_NAME: ${{ format('{0}/soluciondesde0-identity-api', toLower(github.repository_owner)) }}
 
 permissions:
   contents: read
