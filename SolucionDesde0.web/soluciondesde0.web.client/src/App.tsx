@@ -7,6 +7,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 import NotFoundPage from './pages/NotFoundPage';
 import ProfilePage from './pages/ProfilePage';
+import ProductsPage from './pages/ProductsPage';
 
 const AppContent = () => {
     const { isAuthenticated, loading } = useAuth();
@@ -39,6 +40,14 @@ const AppContent = () => {
                 isAuthenticated ? (
                     <MainLayout>
                         <ProfilePage />
+                    </MainLayout>
+                ) : <Navigate to="/login" />
+            } />
+
+            <Route path="/products" element={
+                isAuthenticated ? (
+                    <MainLayout>
+                        <ProductsPage />
                     </MainLayout>
                 ) : <Navigate to="/login" />
             } />

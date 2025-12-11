@@ -3,9 +3,11 @@ import { useAuth } from '../hooks/useAuth';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PeopleIcon from '@mui/icons-material/People';
 import ListAltIcon from '@mui/icons-material/ListAlt';
+import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
     const { user } = useAuth();
+    const navigate = useNavigate();
 
     const isAdmin = user?.role === 'Admin';
     //const isMember = user?.role === 'Member';
@@ -32,6 +34,7 @@ const HomePage = () => {
                         size="large"
                         fullWidth
                         startIcon={<ShoppingCartIcon />}
+                        onClick={() => navigate('/products')}
                         sx={{
                             py: 2.5,
                             fontSize: '1.1rem',
