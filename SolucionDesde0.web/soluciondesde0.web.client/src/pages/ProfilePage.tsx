@@ -3,7 +3,7 @@ import { useAuth } from '../hooks/useAuth';
 import PersonIcon from '@mui/icons-material/Person';
 import EmailIcon from '@mui/icons-material/Email';
 import SecurityIcon from '@mui/icons-material/Security';
-import EditIcon from '@mui/icons-material/Edit';
+//import EditIcon from '@mui/icons-material/Edit';
 
 const ProfilePage = () => {
     const { user } = useAuth();
@@ -18,7 +18,7 @@ const ProfilePage = () => {
 
     return (
         <Container maxWidth="md" sx={{ py: 4 }}>
-            <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mb: 4, color: 'primary.main', textAlign: 'center', color: 'white', textShadow: '1px 1px 2px rgba(0,0,0,0.5)'}}>
+            <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mb: 4, textAlign: 'center', color: 'white', textShadow: '1px 1px 2px rgba(0,0,0,0.5)'}}>
                 Mi Perfil
             </Typography>
 
