@@ -14,12 +14,14 @@ import type { ProductResponse } from '../types/product';
 import ProductCard from '../components/ProductCard';
 import AddIcon from '@mui/icons-material/Add';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import { useNavigate } from 'react-router-dom';
 
 const ProductsPage = () => {
     const { user } = useAuth();
     const [products, setProducts] = useState<ProductResponse[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
+    const navigate = useNavigate();
 
     const isAdmin = user?.role === 'Admin';
 
@@ -45,7 +47,7 @@ const ProductsPage = () => {
     };
 
     const handleCreateProduct = () => {
-        console.log('Crear producto');
+        navigate('/products/create');
     };
 
     const handleCart = () => {
