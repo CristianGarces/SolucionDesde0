@@ -9,12 +9,14 @@ import NotFoundPage from './pages/NotFoundPage';
 import ProfilePage from './pages/ProfilePage';
 import ProductsPage from './pages/ProductsPage';
 import CreateProductPage from './pages/CreateProductPage';
+import CategoriesPage from './pages/CategoriesPage';
+import CreateCategoryPage from './pages/CreateCategoryPage';
 
 const AppContent = () => {
     const { isAuthenticated, loading } = useAuth();
 
     if (loading) {
-        return <div style={{ padding: '2rem', textAlign: 'center' }}>Cargando aplicación...</div>;
+        return <div style={{ padding: '2rem', textAlign: 'center' }}>Cargando aplicacion...</div>;
     }
 
     return (
@@ -37,14 +39,7 @@ const AppContent = () => {
                 isAuthenticated ? <Navigate to="/" /> : <RegisterPage />
             } />
 
-            <Route path="/profile" element={
-                isAuthenticated ? (
-                    <MainLayout>
-                        <ProfilePage />
-                    </MainLayout>
-                ) : <Navigate to="/login" />
-            } />
-
+            {/* Rutas de productos */}
             <Route path="/products" element={
                 isAuthenticated ? (
                     <MainLayout>
@@ -57,6 +52,33 @@ const AppContent = () => {
                 isAuthenticated ? (
                     <MainLayout>
                         <CreateProductPage />
+                    </MainLayout>
+                ) : <Navigate to="/login" />
+            } />
+
+            {/* Rutas de categorías (solo Admin) */}
+            <Route path="/categories" element={
+                isAuthenticated ? (
+                    <MainLayout>
+                        <CategoriesPage />
+                    </MainLayout>
+                ) : <Navigate to="/login" />
+            } />
+
+            { /*Ruta para crear categorías - la añadiremos después */}
+            <Route path="/categories/create" element={
+                isAuthenticated ? (
+                    <MainLayout>
+                        <CreateCategoryPage />
+                    </MainLayout>
+                ) : <Navigate to="/login" />
+            } />
+            
+
+            <Route path="/profile" element={
+                isAuthenticated ? (
+                    <MainLayout>
+                        <ProfilePage />
                     </MainLayout>
                 ) : <Navigate to="/login" />
             } />

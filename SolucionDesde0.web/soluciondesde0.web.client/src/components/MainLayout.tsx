@@ -1,6 +1,6 @@
 import { Box } from '@mui/material';
 import Header from './Header';
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 interface MainLayoutProps {
     children: ReactNode;

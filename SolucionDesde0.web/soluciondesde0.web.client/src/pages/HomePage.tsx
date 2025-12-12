@@ -3,6 +3,7 @@ import { useAuth } from '../hooks/useAuth';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PeopleIcon from '@mui/icons-material/People';
 import ListAltIcon from '@mui/icons-material/ListAlt';
+import CategoryIcon from '@mui/icons-material/Category';
 import { useNavigate } from 'react-router-dom';
 
 const HomePage = () => {
@@ -10,7 +11,6 @@ const HomePage = () => {
     const navigate = useNavigate();
 
     const isAdmin = user?.role === 'Admin';
-    //const isMember = user?.role === 'Member';
 
     return (
         <Container maxWidth="md" sx={{ py: 4 }}>
@@ -46,6 +46,27 @@ const HomePage = () => {
                     >
                         Productos
                     </Button>
+
+                    {/* Botón Categorías (solo Admin) */}
+                    {isAdmin && (
+                        <Button
+                            variant="contained"
+                            size="large"
+                            fullWidth
+                            startIcon={<CategoryIcon />}
+                            onClick={() => navigate('/categories')}
+                            sx={{
+                                py: 2.5,
+                                fontSize: '1.1rem',
+                                background: 'linear-gradient(45deg, #FF9800 30%, #FFB74D 90%)',
+                                borderRadius: 2,
+                                justifyContent: 'flex-start',
+                                pl: 3
+                            }}
+                        >
+                            Categorias
+                        </Button>
+                    )}
 
                     {/* Botón Usuarios (solo Admin) */}
                     {isAdmin && (
