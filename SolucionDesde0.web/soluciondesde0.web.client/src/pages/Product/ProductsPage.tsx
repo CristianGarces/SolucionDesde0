@@ -50,6 +50,35 @@ const ProductsPage = () => {
         navigate('/products/create');
     };
 
+    const handleEditProduct = (id: string) => {
+        navigate(`/products/edit/${id}`);
+    };
+
+    const handleDeleteProduct = async (id: string, name: string) => {
+        if (!window.confirm(`Estas seguro de eliminar el producto "${name}"?`)) {
+            return;
+        }
+
+        try {
+            await productService.deleteProduct(id);
+            fetchProducts();
+        } catch (err: unknown) {
+            console.error('Error deleting product:', err);
+
+            let errorMessage = 'Error al eliminar el producto';
+
+            // Extraer mensaje especifico del backend
+            if (err && typeof err === 'object' && 'response' in err) {
+                const errorObj = err as { response?: { data?: { error?: string } } };
+
+                if (errorObj.response?.data?.error) {
+                    errorMessage = errorObj.response.data.error;
+                }
+            }
+            alert(errorMessage);
+        }
+    };
+
     const handleCart = () => {
         console.log('Abrir carrito');
     };
@@ -67,7 +96,7 @@ const ProductsPage = () => {
                     </Typography>
                 </Box>
 
-                {/* Botón según rol */}
+                {/* Boton segun rol */}
                 {isAdmin ? (
                     <Button
                         variant="contained"
@@ -112,14 +141,19 @@ const ProductsPage = () => {
                                 No hay productos disponibles
                             </Typography>
                             <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                                {isAdmin ? 'Crea tu primer producto usando el botón "Crear Producto"' : 'Pronto habrá productos disponibles'}
+                                {isAdmin ? 'Crea tu primer producto usando el boton "Crear Producto"' : 'Pronto habra productos disponibles'}
                             </Typography>
                         </Box>
                     ) : (
                         <Grid container spacing={2}>
                             {products.map((product) => (
                                 <Grid item xs={12} key={product.id}>
-                                    <ProductCard product={product} />
+                                    <ProductCard
+                                        product={product}
+                                        isAdmin={isAdmin}
+                                        onEdit={handleEditProduct}
+                                        onDelete={handleDeleteProduct}
+                                    />
                                 </Grid>
                             ))}
                         </Grid>

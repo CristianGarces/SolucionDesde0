@@ -12,6 +12,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import CreateProductPage from './pages/Product/CreateProductPage';
 import ProductsPage from './pages/Product/ProductsPage';
 import ProfilePage from './pages/User/ProfilePage';
+import EditProductPage from './pages/Product/EditProductPage';
 
 
 const AppContent = () => {
@@ -54,6 +55,14 @@ const AppContent = () => {
                 isAuthenticated ? (
                     <MainLayout>
                         <CreateProductPage />
+                    </MainLayout>
+                ) : <Navigate to="/login" />
+            } />
+
+            <Route path="/products/edit/:id" element={
+                isAuthenticated ? (
+                    <MainLayout>
+                        <EditProductPage />
                     </MainLayout>
                 ) : <Navigate to="/login" />
             } />

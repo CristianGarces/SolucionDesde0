@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import {
     Container,
     Typography,
@@ -13,39 +14,29 @@ import {
     CircularProgress,
     Paper
 } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { productService } from '../../api/productService';
 import { categoryService } from '../../api/categoryService';
+import type { ProductResponse, UpdateProductRequest } from '../../types/product';
 import type { CategoryResponse } from '../../types/categories';
-import type { CreateProductRequest } from '../../types/product';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SaveIcon from '@mui/icons-material/Save';
-import { AxiosError } from 'axios';
 
-// Helper function para manejar errores de forma segura
-const getErrorMessage = (error: unknown, defaultMessage: string = 'Error desconocido'): string => {
-    if (error instanceof AxiosError) {
-        return error.response?.data?.message || error.message || defaultMessage;
-    }
-    if (error instanceof Error) {
-        return error.message;
-    }
-    if (typeof error === 'string') return error;
-    return defaultMessage;
-};
-
-const CreateProductPage = () => {
+const EditProductPage = () => {
+    const { id } = useParams<{ id: string }>();
     const navigate = useNavigate();
     const { user } = useAuth();
+
+    const [product, setProduct] = useState<ProductResponse | null>(null);
     const [categories, setCategories] = useState<CategoryResponse[]>([]);
     const [loading, setLoading] = useState(true);
+    const [loadingCategories, setLoadingCategories] = useState(false);
     const [submitting, setSubmitting] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [success, setSuccess] = useState(false);
 
     // Estado del formulario
-    const [formData, setFormData] = useState<CreateProductRequest>({
+    const [formData, setFormData] = useState<UpdateProductRequest>({
         name: '',
         description: '',
         price: 0,
@@ -64,28 +55,45 @@ const CreateProductPage = () => {
             return;
         }
 
-        fetchCategories();
-    }, [isAdmin, navigate]);
+        if (id) {
+            fetchProduct(id);
+            fetchAllCategories();
+        }
+    }, [isAdmin, navigate, id]);
 
-    const fetchCategories = async () => {
+    const fetchProduct = async (productId: string) => {
         try {
             setLoading(true);
-            const data = await categoryService.getAllCategories();
-            setCategories(data);
-
-            // Seleccionar primera categoria por defecto si existe
-            if (data.length > 0) {
-                setFormData(prev => ({
-                    ...prev,
-                    categoryId: data[0].id
-                }));
-            }
+            setError(null);
+            const data = await productService.getProductById(productId);
+            setProduct(data);
+            setFormData({
+                name: data.name,
+                description: data.description,
+                price: data.price,
+                stock: data.stock,
+                categoryId: data.categoryId
+            });
         } catch (err: unknown) {
-            const errorMsg = getErrorMessage(err, 'Error desconocido al cargar categorias');
-            setError('Error al cargar categorias: ' + errorMsg);
-            console.error('Error fetching categories:', err);
+            const errorMsg = err instanceof Error
+                ? err.message
+                : 'Error desconocido al cargar el producto';
+            setError('Error al cargar el producto: ' + errorMsg);
+            console.error('Error fetching product:', err);
         } finally {
             setLoading(false);
+        }
+    };
+
+    const fetchAllCategories = async () => {
+        try {
+            setLoadingCategories(true);
+            const data = await categoryService.getAllCategories();
+            setCategories(data);
+        } catch (err: unknown) {
+            console.error('Error fetching categories:', err);
+        } finally {
+            setLoadingCategories(false);
         }
     };
 
@@ -101,11 +109,11 @@ const CreateProductPage = () => {
         }
 
         if (!formData.description.trim()) {
-            errors.description = 'La descripcion es requerida';
+            errors.description = 'La descripción es requerida';
         } else if (formData.description.trim().length < 10) {
-            errors.description = 'La descripcion debe tener al menos 10 caracteres';
+            errors.description = 'La descripción debe tener al menos 10 caracteres';
         } else if (formData.description.trim().length > 1000) {
-            errors.description = 'La descripcion no puede exceder los 1000 caracteres';
+            errors.description = 'La descripción no puede exceder los 1000 caracteres';
         }
 
         if (formData.price <= 0) {
@@ -117,7 +125,7 @@ const CreateProductPage = () => {
         }
 
         if (!formData.categoryId) {
-            errors.categoryId = 'Debe seleccionar una categoria';
+            errors.categoryId = 'Debe seleccionar una categoría';
         }
 
         setFormErrors(errors);
@@ -125,7 +133,7 @@ const CreateProductPage = () => {
     };
 
     const handleInputChange = (
-        field: keyof CreateProductRequest,
+        field: keyof UpdateProductRequest,
         value: string | number
     ) => {
         setFormData(prev => ({
@@ -142,7 +150,7 @@ const CreateProductPage = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!validateForm()) {
+        if (!validateForm() || !id) {
             return;
         }
 
@@ -150,26 +158,41 @@ const CreateProductPage = () => {
             setSubmitting(true);
             setError(null);
 
-            // Convertir price y stock a numeros
             const productData = {
                 ...formData,
                 price: parseFloat(formData.price.toString()),
                 stock: parseInt(formData.stock.toString())
             };
 
-            await productService.createProduct(productData);
+            await productService.updateProduct(id, productData);
 
             setSuccess(true);
 
-            // Redirigir despues de 2 segundos
+            // Redirigir después de 2 segundos
             setTimeout(() => {
                 navigate('/products');
             }, 2000);
 
         } catch (err: unknown) {
-            console.error('Error creating product:', err);
-            const errorMsg = getErrorMessage(err, 'Error desconocido al crear el producto');
-            setError('Error al crear el producto: ' + errorMsg);
+            console.error('Error updating product:', err);
+
+            let errorMessage = 'Error al actualizar el producto';
+
+            // Extraer mensaje específico del backend
+            if (err && typeof err === 'object' && 'response' in err) {
+                const errorObj = err as { response?: { data?: { error?: string } } };
+
+                if (errorObj.response?.data?.error) {
+                    const backendError = errorObj.response.data.error;
+                    if (backendError.includes('already exists')) {
+                        errorMessage = `Ya existe un producto con el nombre "${formData.name}".`;
+                    } else {
+                        errorMessage = backendError;
+                    }
+                }
+            }
+
+            setError(errorMessage);
         } finally {
             setSubmitting(false);
         }
@@ -179,8 +202,9 @@ const CreateProductPage = () => {
         navigate('/products');
     };
 
-    // Si no es admin, no mostrar nada (ya se redirige)
+    // Si no es admin, redirigir
     if (!isAdmin) {
+        navigate('/products');
         return null;
     }
 
@@ -188,14 +212,39 @@ const CreateProductPage = () => {
         return (
             <Container maxWidth="md" sx={{ py: 8, textAlign: 'center' }}>
                 <CircularProgress />
-                <Typography sx={{ mt: 2 }}>Cargando...</Typography>
+                <Typography sx={{ mt: 2 }}>Cargando producto...</Typography>
+            </Container>
+        );
+    }
+
+    if (error && !product) {
+        return (
+            <Container maxWidth="md" sx={{ py: 4 }}>
+                <Button
+                    startIcon={<ArrowBackIcon />}
+                    onClick={() => navigate('/products')}
+                    sx={{ mb: 3 }}
+                >
+                    Volver a Productos
+                </Button>
+
+                <Alert severity="error" sx={{ mb: 3 }}>
+                    {error}
+                </Alert>
+
+                <Button
+                    variant="contained"
+                    onClick={() => navigate('/products')}
+                >
+                    Volver al listado
+                </Button>
             </Container>
         );
     }
 
     return (
         <Container maxWidth="md" sx={{ py: 4 }}>
-            {/* Boton volver */}
+            {/* Botón volver */}
             <Button
                 startIcon={<ArrowBackIcon />}
                 onClick={() => navigate('/products')}
@@ -206,12 +255,12 @@ const CreateProductPage = () => {
 
             <Paper elevation={3} sx={{ p: 4, borderRadius: 2 }}>
                 <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
-                    Crear Nuevo Producto
+                    Editar Producto: {product?.name}
                 </Typography>
 
                 {success && (
                     <Alert severity="success" sx={{ mb: 3 }}>
-                        Producto creado exitosamente! Redirigiendo a la lista de productos...
+                        Producto actualizado exitosamente! Redirigiendo a la lista de productos...
                     </Alert>
                 )}
 
@@ -230,25 +279,25 @@ const CreateProductPage = () => {
                             value={formData.name}
                             onChange={(e) => handleInputChange('name', e.target.value)}
                             error={!!formErrors.name}
-                            helperText={formErrors.name || 'Nombre del producto'}
+                            helperText={formErrors.name || 'Nombre descriptivo del producto'}
                             disabled={submitting || success}
                         />
 
-                        {/* Descripcion */}
+                        {/* Descripción */}
                         <TextField
-                            label="Descripcion *"
+                            label="Descripción *"
                             fullWidth
                             multiline
                             rows={4}
                             value={formData.description}
                             onChange={(e) => handleInputChange('description', e.target.value)}
                             error={!!formErrors.description}
-                            helperText={formErrors.description || 'Descripcion detallada del producto'}
+                            helperText={formErrors.description || 'Descripción detallada del producto'}
                             disabled={submitting || success}
                         />
 
                         <Box sx={{ display: 'flex', gap: 2 }}>
-                            {/* Precio - convertir string a numero */}
+                            {/* Precio */}
                             <TextField
                                 label="Precio (€) *"
                                 type="number"
@@ -270,7 +319,7 @@ const CreateProductPage = () => {
                                 disabled={submitting || success}
                             />
 
-                            {/* Stock - convertir string a numero */}
+                            {/* Stock */}
                             <TextField
                                 label="Stock *"
                                 type="number"
@@ -292,17 +341,21 @@ const CreateProductPage = () => {
                             />
                         </Box>
 
-                        {/* Categoria */}
-                        <FormControl fullWidth error={!!formErrors.categoryId} disabled={submitting || success}>
-                            <InputLabel>Categoria *</InputLabel>
+                        {/* Categoría */}
+                        <FormControl fullWidth error={!!formErrors.categoryId} disabled={submitting || success || loadingCategories}>
+                            <InputLabel>Categoría *</InputLabel>
                             <Select
                                 value={formData.categoryId}
-                                label="Categoria *"
+                                label="Categoría *"
                                 onChange={(e) => handleInputChange('categoryId', e.target.value)}
                             >
-                                {categories.length === 0 ? (
+                                {loadingCategories ? (
+                                    <MenuItem value="">
+                                        <em>Cargando categorías...</em>
+                                    </MenuItem>
+                                ) : categories.length === 0 ? (
                                     <MenuItem value="" disabled>
-                                        No hay categorias disponibles
+                                        No hay categorías disponibles
                                     </MenuItem>
                                 ) : (
                                     categories.map((category) => (
@@ -317,12 +370,19 @@ const CreateProductPage = () => {
                                     {formErrors.categoryId}
                                 </Typography>
                             )}
-                            {!formErrors.categoryId && (
-                                <Typography variant="caption" color="text.secondary" sx={{ ml: 2, mt: 0.5 }}>
-                                    {categories.length === 0 ? 'Debe crear categorias primero' : 'Seleccione una categoria'}
-                                </Typography>
-                            )}
                         </FormControl>
+
+                        {/* Información adicional */}
+                        {product && (
+                            <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 1 }}>
+                                <Typography variant="body2" color="text.secondary">
+                                    <strong>ID:</strong> {product.id}
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                                    <strong>Creado por:</strong> Usuario ID: {product.createdByUserId}
+                                </Typography>
+                            </Box>
+                        )}
 
                         {/* Botones */}
                         <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end', mt: 4 }}>
@@ -338,16 +398,16 @@ const CreateProductPage = () => {
                                 variant="contained"
                                 type="submit"
                                 startIcon={<SaveIcon />}
-                                disabled={submitting || success || categories.length === 0}
+                                disabled={submitting || success || loadingCategories || categories.length === 0}
                                 sx={{ minWidth: 150 }}
                             >
                                 {submitting ? (
                                     <>
                                         <CircularProgress size={20} sx={{ mr: 1 }} />
-                                        Creando...
+                                        Guardando...
                                     </>
                                 ) : (
-                                    'Crear Producto'
+                                    'Guardar Cambios'
                                 )}
                             </Button>
                         </Box>
@@ -363,4 +423,4 @@ const CreateProductPage = () => {
     );
 };
 
-export default CreateProductPage;
+export default EditProductPage;

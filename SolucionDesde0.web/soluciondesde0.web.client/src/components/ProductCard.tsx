@@ -1,11 +1,16 @@
-import { Card, CardContent, Typography, Box, Chip } from '@mui/material';
+import { Card, CardContent, Typography, Box, Chip, IconButton } from '@mui/material';
 import type { ProductResponse } from '../types/product';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface ProductCardProps {
     product: ProductResponse;
+    isAdmin?: boolean;
+    onEdit?: (id: string) => void;
+    onDelete?: (id: string, name: string) => void;
 }
 
-const ProductCard = ({ product }: ProductCardProps) => {
+const ProductCard = ({ product, isAdmin = false, onEdit, onDelete }: ProductCardProps) => {
     return (
         <Card
             elevation={2}
@@ -21,7 +26,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
         >
             <CardContent>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <Box>
+                    <Box sx={{ flex: 1 }}>
                         <Typography variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
                             {product.name}
                         </Typography>
@@ -30,7 +35,7 @@ const ProductCard = ({ product }: ProductCardProps) => {
                         </Typography>
                     </Box>
 
-                    <Box sx={{ textAlign: 'right' }}>
+                    <Box sx={{ textAlign: 'right', ml: 2 }}>
                         <Typography variant="h5" color="primary" sx={{ fontWeight: 'bold' }}>
                             {product.price.toFixed(2)}&euro;
                         </Typography>
@@ -43,10 +48,35 @@ const ProductCard = ({ product }: ProductCardProps) => {
                     </Box>
                 </Box>
 
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 2 }}>
+                {/* Footer con categoria y botones */}
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
                     <Typography variant="caption" color="text.secondary">
                         Categoria: {product.categoryName || 'Sin categoria'}
                     </Typography>
+
+                    {/* Botones de accion (solo admin) */}
+                    {isAdmin && (
+                        <Box sx={{ display: 'flex', gap: 0.5 }}>
+                            {onEdit && (
+                                <IconButton
+                                    size="small"
+                                    onClick={() => onEdit(product.id)}
+                                    sx={{ color: 'primary.main' }}
+                                >
+                                    <EditIcon fontSize="small" />
+                                </IconButton>
+                            )}
+                            {onDelete && (
+                                <IconButton
+                                    size="small"
+                                    onClick={() => onDelete(product.id, product.name)}
+                                    color="error"
+                                >
+                                    <DeleteIcon fontSize="small" />
+                                </IconButton>
+                            )}
+                        </Box>
+                    )}
                 </Box>
             </CardContent>
         </Card>
