@@ -95,6 +95,7 @@ const HomePage = () => {
                         size="large"
                         fullWidth
                         startIcon={<ListAltIcon />}
+                        onClick={() => navigate('/orders')}
                         sx={{
                             py: 2.5,
                             fontSize: '1.1rem',
@@ -104,7 +105,7 @@ const HomePage = () => {
                             pl: 3
                         }}
                     >
-                        Pedidos
+                        Pedidos Creados
                     </Button>
                 </Box>
             </Box>

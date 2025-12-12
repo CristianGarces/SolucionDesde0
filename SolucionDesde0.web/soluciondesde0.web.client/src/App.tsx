@@ -16,6 +16,8 @@ import EditProductPage from './pages/Product/EditProductPage';
 import UsersPage from './pages/User/UsersPage';
 import CreateUserPage from './pages/User/CreateUserPage';
 import EditUserPage from './pages/User/EditUserPage';
+import OrdersPage from './pages/Order/OrdersPage';
+import OrderDetailPage from './pages/Order/OrderDetailPage';
 
 
 const AppContent = () => {
@@ -123,6 +125,23 @@ const AppContent = () => {
                 isAuthenticated ? (
                     <MainLayout>
                         <ProfilePage />
+                    </MainLayout>
+                ) : <Navigate to="/login" />
+            } />
+
+            {/* Rutas de pedidos */}
+            <Route path="/orders" element={
+                isAuthenticated ? (
+                    <MainLayout>
+                        <OrdersPage />
+                    </MainLayout>
+                ) : <Navigate to="/login" />
+            } />
+
+            <Route path="/orders/:id" element={
+                isAuthenticated ? (
+                    <MainLayout>
+                        <OrderDetailPage />
                     </MainLayout>
                 ) : <Navigate to="/login" />
             } />

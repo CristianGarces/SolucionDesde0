@@ -145,29 +145,12 @@ namespace SolucionDesde0.API.Orders.Services
             if (order == null)
                 return (false, "Order not found");
 
-            if (!IsValidStatusTransition(order.Status, newStatus))
-                return (false, $"Cannot transition from {order.Status} to {newStatus}");
-
             order.Status = newStatus;
 
             await _context.SaveChangesAsync();
             _logger.LogInformation("Order status updated: {OrderId} -> {Status}", id, newStatus);
 
             return (true, null);
-        }
-
-        private bool IsValidStatusTransition(OrderStatus current, OrderStatus next)
-        {
-            return (current, next) switch
-            {
-                (OrderStatus.Pending, OrderStatus.Confirmed) => true,
-                (OrderStatus.Pending, OrderStatus.Cancelled) => true,
-                (OrderStatus.Confirmed, OrderStatus.Processing) => true,
-                (OrderStatus.Confirmed, OrderStatus.Cancelled) => true,
-                (OrderStatus.Processing, OrderStatus.Shipped) => true,
-                (OrderStatus.Shipped, OrderStatus.Delivered) => true,
-                _ => false
-            };
         }
 
         private OrderResponse MapToResponse(Order order) => new(
