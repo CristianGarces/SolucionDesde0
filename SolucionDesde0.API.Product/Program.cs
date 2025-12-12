@@ -7,6 +7,7 @@ using SolucionDesde0.API.Product.Data;
 using SolucionDesde0.API.Product.Dto;
 using SolucionDesde0.API.Product.Services;
 using SolucionDesde0.API.Product.Validations.CategoriesVal;
+using SolucionDesde0.API.Product.Validations.ProductsVal;
 using SolucionDesde0.ServiceDefaults;
 using System.Text;
 
@@ -28,6 +29,8 @@ builder.Services.AddOpenApi();
 //Validators
 builder.Services.AddScoped<IValidator<CreateCategoryRequest>, CreateCategoryRequestValidator>();
 builder.Services.AddScoped<IValidator<UpdateCategoryRequest>, UpdateCategoryRequestValidator>();
+builder.Services.AddScoped<IValidator<CreateProductRequest>, CreateProductRequestValidator>();
+builder.Services.AddScoped<IValidator<UpdateProductRequest>, UpdateProductRequestValidator>();
 
 // JWT Authentication
 builder.Services.AddAuthentication(options =>

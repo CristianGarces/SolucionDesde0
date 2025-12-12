@@ -21,6 +21,19 @@ import type { CategoryResponse } from '../types/categories';
 import type { CreateProductRequest } from '../types/product';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SaveIcon from '@mui/icons-material/Save';
+import { AxiosError } from 'axios';
+
+// Helper function para manejar errores de forma segura
+const getErrorMessage = (error: unknown, defaultMessage: string = 'Error desconocido'): string => {
+    if (error instanceof AxiosError) {
+        return error.response?.data?.message || error.message || defaultMessage;
+    }
+    if (error instanceof Error) {
+        return error.message;
+    }
+    if (typeof error === 'string') return error;
+    return defaultMessage;
+};
 
 const CreateProductPage = () => {
     const navigate = useNavigate();
@@ -59,16 +72,17 @@ const CreateProductPage = () => {
             setLoading(true);
             const data = await categoryService.getAllCategories();
             setCategories(data);
-            
-            // Seleccionar primera categoría por defecto si existe
+
+            // Seleccionar primera categoria por defecto si existe
             if (data.length > 0) {
                 setFormData(prev => ({
                     ...prev,
                     categoryId: data[0].id
                 }));
             }
-        } catch (err: any) {
-            setError('Error al cargar categorías: ' + (err.message || 'Error desconocido'));
+        } catch (err: unknown) {
+            const errorMsg = getErrorMessage(err, 'Error desconocido al cargar categorias');
+            setError('Error al cargar categorias: ' + errorMsg);
             console.error('Error fetching categories:', err);
         } finally {
             setLoading(false);
@@ -82,12 +96,16 @@ const CreateProductPage = () => {
             errors.name = 'El nombre es requerido';
         } else if (formData.name.trim().length < 3) {
             errors.name = 'El nombre debe tener al menos 3 caracteres';
+        } else if (formData.name.trim().length > 200) {
+            errors.name = 'El nombre no puede exceder los 200 caracteres';
         }
 
         if (!formData.description.trim()) {
-            errors.description = 'La descripción es requerida';
+            errors.description = 'La descripcion es requerida';
         } else if (formData.description.trim().length < 10) {
-            errors.description = 'La descripción debe tener al menos 10 caracteres';
+            errors.description = 'La descripcion debe tener al menos 10 caracteres';
+        } else if (formData.description.trim().length > 1000) {
+            errors.description = 'La descripcion no puede exceder los 1000 caracteres';
         }
 
         if (formData.price <= 0) {
@@ -99,32 +117,31 @@ const CreateProductPage = () => {
         }
 
         if (!formData.categoryId) {
-            errors.categoryId = 'Debe seleccionar una categoría';
+            errors.categoryId = 'Debe seleccionar una categoria';
         }
 
         setFormErrors(errors);
         return Object.keys(errors).length === 0;
     };
 
-    const handleInputChange = (field: keyof CreateProductRequest, value: any) => {
+    const handleInputChange = (
+        field: keyof CreateProductRequest,
+        value: string | number
+    ) => {
         setFormData(prev => ({
             ...prev,
             [field]: value
         }));
-        
-        // Limpiar error del campo al modificar
+
+        // Limpiar error
         if (formErrors[field]) {
-            setFormErrors(prev => {
-                const newErrors = { ...prev };
-                delete newErrors[field];
-                return newErrors;
-            });
+            setFormErrors(prev => ({ ...prev, [field]: '' }));
         }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         if (!validateForm()) {
             return;
         }
@@ -133,7 +150,7 @@ const CreateProductPage = () => {
             setSubmitting(true);
             setError(null);
 
-            // Convertir price y stock a números
+            // Convertir price y stock a numeros
             const productData = {
                 ...formData,
                 price: parseFloat(formData.price.toString()),
@@ -141,18 +158,18 @@ const CreateProductPage = () => {
             };
 
             await productService.createProduct(productData);
-            
+
             setSuccess(true);
-            
-            // Redirigir después de 2 segundos
+
+            // Redirigir despues de 2 segundos
             setTimeout(() => {
                 navigate('/products');
             }, 2000);
 
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error('Error creating product:', err);
-            setError('Error al crear el producto: ' + 
-                (err.response?.data?.message || err.message || 'Error desconocido'));
+            const errorMsg = getErrorMessage(err, 'Error desconocido al crear el producto');
+            setError('Error al crear el producto: ' + errorMsg);
         } finally {
             setSubmitting(false);
         }
@@ -178,7 +195,7 @@ const CreateProductPage = () => {
 
     return (
         <Container maxWidth="md" sx={{ py: 4 }}>
-            {/* Botón volver */}
+            {/* Boton volver */}
             <Button
                 startIcon={<ArrowBackIcon />}
                 onClick={() => navigate('/products')}
@@ -194,7 +211,7 @@ const CreateProductPage = () => {
 
                 {success && (
                     <Alert severity="success" sx={{ mb: 3 }}>
-                        ¡Producto creado exitosamente! Redirigiendo a la lista de productos...
+                        Producto creado exitosamente! Redirigiendo a la lista de productos...
                     </Alert>
                 )}
 
@@ -213,36 +230,39 @@ const CreateProductPage = () => {
                             value={formData.name}
                             onChange={(e) => handleInputChange('name', e.target.value)}
                             error={!!formErrors.name}
-                            helperText={formErrors.name || 'Nombre descriptivo del producto'}
+                            helperText={formErrors.name || 'Nombre del producto'}
                             disabled={submitting || success}
                         />
 
-                        {/* Descripción */}
+                        {/* Descripcion */}
                         <TextField
-                            label="Descripción *"
+                            label="Descripcion *"
                             fullWidth
                             multiline
                             rows={4}
                             value={formData.description}
                             onChange={(e) => handleInputChange('description', e.target.value)}
                             error={!!formErrors.description}
-                            helperText={formErrors.description || 'Descripción detallada del producto'}
+                            helperText={formErrors.description || 'Descripcion detallada del producto'}
                             disabled={submitting || success}
                         />
 
                         <Box sx={{ display: 'flex', gap: 2 }}>
-                            {/* Precio */}
+                            {/* Precio - convertir string a numero */}
                             <TextField
                                 label="Precio (€) *"
                                 type="number"
                                 fullWidth
                                 value={formData.price}
-                                onChange={(e) => handleInputChange('price', e.target.value)}
+                                onChange={(e) => {
+                                    const numValue = parseFloat(e.target.value) || 0;
+                                    handleInputChange('price', numValue);
+                                }}
                                 error={!!formErrors.price}
                                 helperText={formErrors.price}
                                 InputProps={{
-                                    inputProps: { 
-                                        min: 0, 
+                                    inputProps: {
+                                        min: 0,
                                         step: 0.01,
                                         placeholder: '0.00'
                                     }
@@ -250,17 +270,20 @@ const CreateProductPage = () => {
                                 disabled={submitting || success}
                             />
 
-                            {/* Stock */}
+                            {/* Stock - convertir string a numero */}
                             <TextField
                                 label="Stock *"
                                 type="number"
                                 fullWidth
                                 value={formData.stock}
-                                onChange={(e) => handleInputChange('stock', e.target.value)}
+                                onChange={(e) => {
+                                    const numValue = parseInt(e.target.value) || 0;
+                                    handleInputChange('stock', numValue);
+                                }}
                                 error={!!formErrors.stock}
                                 helperText={formErrors.stock}
                                 InputProps={{
-                                    inputProps: { 
+                                    inputProps: {
                                         min: 0,
                                         placeholder: '0'
                                     }
@@ -269,17 +292,17 @@ const CreateProductPage = () => {
                             />
                         </Box>
 
-                        {/* Categoría */}
+                        {/* Categoria */}
                         <FormControl fullWidth error={!!formErrors.categoryId} disabled={submitting || success}>
-                            <InputLabel>Categoría *</InputLabel>
+                            <InputLabel>Categoria *</InputLabel>
                             <Select
                                 value={formData.categoryId}
-                                label="Categoría *"
+                                label="Categoria *"
                                 onChange={(e) => handleInputChange('categoryId', e.target.value)}
                             >
                                 {categories.length === 0 ? (
                                     <MenuItem value="" disabled>
-                                        No hay categorías disponibles
+                                        No hay categorias disponibles
                                     </MenuItem>
                                 ) : (
                                     categories.map((category) => (
@@ -296,7 +319,7 @@ const CreateProductPage = () => {
                             )}
                             {!formErrors.categoryId && (
                                 <Typography variant="caption" color="text.secondary" sx={{ ml: 2, mt: 0.5 }}>
-                                    {categories.length === 0 ? 'Debe crear categorías primero' : 'Seleccione una categoría'}
+                                    {categories.length === 0 ? 'Debe crear categorias primero' : 'Seleccione una categoria'}
                                 </Typography>
                             )}
                         </FormControl>
