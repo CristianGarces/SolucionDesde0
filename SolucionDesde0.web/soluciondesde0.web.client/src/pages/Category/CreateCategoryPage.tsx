@@ -10,9 +10,9 @@ import {
     Paper
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-import { categoryService } from '../api/categoryService';
-import type { CreateCategoryRequest } from '../types/categories';
+import { useAuth } from '../../hooks/useAuth';
+import { categoryService } from '../../api/categoryService';
+import type { CreateCategoryRequest } from '../../types/categories';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SaveIcon from '@mui/icons-material/Save';
 

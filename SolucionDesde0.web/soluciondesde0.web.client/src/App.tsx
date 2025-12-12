@@ -3,15 +3,16 @@ import { AuthProvider } from './contexts/AuthContext';
 import { useAuth } from './hooks/useAuth';
 import MainLayout from './components/MainLayout';
 import HomePage from './pages/HomePage';
-import LoginPage from './pages/LoginPage';
-import RegisterPage from './pages/RegisterPage';
+import LoginPage from './pages/Auth/LoginPage';
+import RegisterPage from './pages/Auth/RegisterPage';
+import CategoriesPage from './pages/Category/CategoriesPage';
+import CreateCategoryPage from './pages/Category/CreateCategoryPage';
+import EditCategoryPage from './pages/Category/EditCategoryPage';
 import NotFoundPage from './pages/NotFoundPage';
-import ProfilePage from './pages/ProfilePage';
-import ProductsPage from './pages/ProductsPage';
-import CreateProductPage from './pages/CreateProductPage';
-import CategoriesPage from './pages/CategoriesPage';
-import CreateCategoryPage from './pages/CreateCategoryPage';
-import EditCategoryPage from './pages/EditCategoryPage';
+import CreateProductPage from './pages/Product/CreateProductPage';
+import ProductsPage from './pages/Product/ProductsPage';
+import ProfilePage from './pages/User/ProfilePage';
+
 
 const AppContent = () => {
     const { isAuthenticated, loading } = useAuth();

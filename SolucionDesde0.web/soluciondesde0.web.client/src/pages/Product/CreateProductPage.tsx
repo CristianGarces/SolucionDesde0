@@ -14,11 +14,11 @@ import {
     Paper
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-import { productService } from '../api/productService';
-import { categoryService } from '../api/categoryService';
-import type { CategoryResponse } from '../types/categories';
-import type { CreateProductRequest } from '../types/product';
+import { useAuth } from '../../hooks/useAuth';
+import { productService } from '../../api/productService';
+import { categoryService } from '../../api/categoryService';
+import type { CategoryResponse } from '../../types/categories';
+import type { CreateProductRequest } from '../../types/product';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SaveIcon from '@mui/icons-material/Save';
 import { AxiosError } from 'axios';

@@ -10,9 +10,9 @@ import {
     CircularProgress,
     Paper
 } from '@mui/material';
-import { useAuth } from '../hooks/useAuth';
-import { categoryService } from '../api/categoryService';
-import type { CategoryResponse, UpdateCategoryRequest } from '../types/categories';
+import { useAuth } from '../../hooks/useAuth';
+import { categoryService } from '../../api/categoryService';
+import type { CategoryResponse, UpdateCategoryRequest } from '../../types/categories';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SaveIcon from '@mui/icons-material/Save';
 

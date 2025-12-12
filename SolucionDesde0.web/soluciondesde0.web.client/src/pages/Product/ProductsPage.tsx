@@ -8,10 +8,10 @@ import {
     Alert,
     Grid
 } from '@mui/material';
-import { useAuth } from '../hooks/useAuth';
-import { productService } from '../api/productService';
-import type { ProductResponse } from '../types/product';
-import ProductCard from '../components/ProductCard';
+import { useAuth } from '../../hooks/useAuth';
+import { productService } from '../../api/productService';
+import type { ProductResponse } from '../../types/product';
+import ProductCard from '../../components/ProductCard';
 import AddIcon from '@mui/icons-material/Add';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useNavigate } from 'react-router-dom';

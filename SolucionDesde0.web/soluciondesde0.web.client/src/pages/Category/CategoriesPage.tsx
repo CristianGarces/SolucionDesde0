@@ -12,9 +12,9 @@ import {
     IconButton
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../hooks/useAuth';
-import { categoryService } from '../api/categoryService';
-import type { CategoryResponse } from '../types/categories';
+import { useAuth } from '../../hooks/useAuth';
+import { categoryService } from '../../api/categoryService';
+import type { CategoryResponse } from '../../types/categories';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
