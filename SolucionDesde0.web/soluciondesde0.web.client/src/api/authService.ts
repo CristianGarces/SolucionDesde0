@@ -10,7 +10,6 @@ export const authService = {
         if (response.data.token) {
             localStorage.setItem('auth_token', response.data.token);
 
-            // También podemos guardar información del usuario del token
             try {
                 const payload = JSON.parse(atob(response.data.token.split('.')[1]));
                 localStorage.setItem('user_info', JSON.stringify({

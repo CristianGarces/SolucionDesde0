@@ -1,9 +1,7 @@
 ﻿using MassTransit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using SolucionDesde0.API.Identity.Data;
 using SolucionDesde0.API.Identity.Dto.Auth;
-using SolucionDesde0.Shared;
 using SolucionDesde0.Shared.Events;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -35,7 +33,7 @@ namespace SolucionDesde0.API.Identity.Services.Auth
 
             var result = await _userManeger.CreateAsync(user, password);
 
-            var addToRoleResult = await _userManeger.AddToRoleAsync(user, Roles.Member);
+            var addToRoleResult = await _userManeger.AddToRoleAsync(user, Data.Roles.Member);
             if (!addToRoleResult.Succeeded)
             {
                 await _userManeger.DeleteAsync(user);

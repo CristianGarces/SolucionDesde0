@@ -75,6 +75,7 @@ const HomePage = () => {
                             size="large"
                             fullWidth
                             startIcon={<PeopleIcon />}
+                            onClick={() => navigate('/users')}
                             sx={{
                                 py: 2.5,
                                 fontSize: '1.1rem',

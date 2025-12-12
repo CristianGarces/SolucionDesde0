@@ -212,7 +212,7 @@ const EditCategoryPage = () => {
 
                 {success && (
                     <Alert severity="success" sx={{ mb: 3 }}>
-                        ¡Categoria actualizada exitosamente! Redirigiendo a la lista de categorias...
+                        Categoria actualizada exitosamente! Redirigiendo a la lista de categorias...
                     </Alert>
                 )}
 

@@ -13,6 +13,9 @@ import CreateProductPage from './pages/Product/CreateProductPage';
 import ProductsPage from './pages/Product/ProductsPage';
 import ProfilePage from './pages/User/ProfilePage';
 import EditProductPage from './pages/Product/EditProductPage';
+import UsersPage from './pages/User/UsersPage';
+import CreateUserPage from './pages/User/CreateUserPage';
+import EditUserPage from './pages/User/EditUserPage';
 
 
 const AppContent = () => {
@@ -92,6 +95,30 @@ const AppContent = () => {
                 ) : <Navigate to="/login" />
             } />
 
+            {/* Rutas de usuarios (solo Admin) */}
+            <Route path="/users" element={
+                isAuthenticated ? (
+                    <MainLayout>
+                        <UsersPage />
+                    </MainLayout>
+                ) : <Navigate to="/login" />
+            } />
+
+            <Route path="/users/create" element={
+                isAuthenticated ? (
+                    <MainLayout>
+                        <CreateUserPage />
+                    </MainLayout>
+                ) : <Navigate to="/login" />
+            } />
+
+            <Route path="/users/edit/:id" element={
+                isAuthenticated ? (
+                    <MainLayout>
+                        <EditUserPage />
+                    </MainLayout>
+                ) : <Navigate to="/login" />
+            } />
             <Route path="/profile" element={
                 isAuthenticated ? (
                     <MainLayout>

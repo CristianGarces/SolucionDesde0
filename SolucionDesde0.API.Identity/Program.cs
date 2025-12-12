@@ -10,6 +10,7 @@ using SolucionDesde0.API.Identity.Data;
 using SolucionDesde0.API.Identity.Data.Seeders;
 using SolucionDesde0.API.Identity.Services;
 using SolucionDesde0.API.Identity.Services.Auth;
+using SolucionDesde0.API.Identity.Services.Roles;
 using SolucionDesde0.API.Identity.Services.User;
 using SolucionDesde0.ServiceDefaults;
 using System.Text;
@@ -26,6 +27,7 @@ builder.AddServiceDefaults();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUserManagementService, UserManagementService>();
+builder.Services.AddScoped<IRoleService, RolesService>();
 
 // Para el secrets (JWT pass)
 builder.Configuration.AddUserSecrets(typeof(Program).Assembly, true);
