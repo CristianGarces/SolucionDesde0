@@ -59,8 +59,7 @@ const CategoriesPage = () => {
     };
 
     const handleEditCategory = (id: string) => {
-        console.log('Editar categoria:', id);
-        // navigate(`/categories/edit/${id}`);
+        navigate(`/categories/edit/${id}`);
     };
 
     const handleDeleteCategory = async (id: string, name: string) => {

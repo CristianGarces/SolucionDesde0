@@ -11,6 +11,7 @@ import ProductsPage from './pages/ProductsPage';
 import CreateProductPage from './pages/CreateProductPage';
 import CategoriesPage from './pages/CategoriesPage';
 import CreateCategoryPage from './pages/CreateCategoryPage';
+import EditCategoryPage from './pages/EditCategoryPage';
 
 const AppContent = () => {
     const { isAuthenticated, loading } = useAuth();
@@ -65,7 +66,6 @@ const AppContent = () => {
                 ) : <Navigate to="/login" />
             } />
 
-            { /*Ruta para crear categorías - la añadiremos después */}
             <Route path="/categories/create" element={
                 isAuthenticated ? (
                     <MainLayout>
@@ -73,7 +73,14 @@ const AppContent = () => {
                     </MainLayout>
                 ) : <Navigate to="/login" />
             } />
-            
+
+            <Route path="/categories/edit/:id" element={
+                isAuthenticated ? (
+                    <MainLayout>
+                        <EditCategoryPage />
+                    </MainLayout>
+                ) : <Navigate to="/login" />
+            } />
 
             <Route path="/profile" element={
                 isAuthenticated ? (
