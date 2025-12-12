@@ -1,7 +1,10 @@
+// components/ProductCard.tsx - Versión compacta
 import { Card, CardContent, Typography, Box, Chip, IconButton } from '@mui/material';
 import type { ProductResponse } from '../types/product';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import AddToCartButton from './AddToCartButton';
+import { useAuth } from '../hooks/useAuth';
 
 interface ProductCardProps {
     product: ProductResponse;
@@ -11,6 +14,8 @@ interface ProductCardProps {
 }
 
 const ProductCard = ({ product, isAdmin = false, onEdit, onDelete }: ProductCardProps) => {
+    const { user } = useAuth();
+
     return (
         <Card
             elevation={2}
@@ -25,17 +30,25 @@ const ProductCard = ({ product, isAdmin = false, onEdit, onDelete }: ProductCard
             }}
         >
             <CardContent>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                    <Box sx={{ flex: 1 }}>
-                        <Typography variant="h6" component="div" sx={{ fontWeight: 'bold' }}>
-                            {product.name}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 2 }}>
-                            {product.description}
-                        </Typography>
-                    </Box>
+                {/* PRIMERA FILA: Nombre */}
+                <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', mb: 1 }}>
+                    {product.name}
+                </Typography>
 
-                    <Box sx={{ textAlign: 'right', ml: 2 }}>
+                {/* DESCRIPCIÓN */}
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    {product.description}
+                </Typography>
+
+                {/* SEGUNDA FILA: Precio, stock y botón (todo en la misma línea) */}
+                <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    mb: 2
+                }}>
+                    {/* Columna izquierda: Precio y stock */}
+                    <Box>
                         <Typography variant="h5" color="primary" sx={{ fontWeight: 'bold' }}>
                             {product.price.toFixed(2)}&euro;
                         </Typography>
@@ -43,18 +56,32 @@ const ProductCard = ({ product, isAdmin = false, onEdit, onDelete }: ProductCard
                             label={`Stock: ${product.stock}`}
                             size="small"
                             color={product.stock > 10 ? "success" : product.stock > 0 ? "warning" : "error"}
-                            sx={{ mt: 1 }}
+                            sx={{ mt: 0.5 }}
                         />
                     </Box>
+
+                    {/* Columna derecha: Botón Añadir al carrito (solo miembros) */}
+                    {user?.role === 'Member' && product.stock > 0 && (
+                        <Box sx={{ ml: 2 }}>
+                            <AddToCartButton product={product} />
+                        </Box>
+                    )}
                 </Box>
 
-                {/* Footer con categoria y botones */}
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 2 }}>
+                {/* TERCERA FILA: Categoría y botones admin */}
+                <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    pt: 2,
+                    borderTop: 1,
+                    borderColor: 'divider'
+                }}>
                     <Typography variant="caption" color="text.secondary">
                         Categoria: {product.categoryName || 'Sin categoria'}
                     </Typography>
 
-                    {/* Botones de accion (solo admin) */}
+                    {/* Botones de acción (solo admin) */}
                     {isAdmin && (
                         <Box sx={{ display: 'flex', gap: 0.5 }}>
                             {onEdit && (

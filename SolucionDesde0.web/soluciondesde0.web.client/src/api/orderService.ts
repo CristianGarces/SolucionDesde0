@@ -40,5 +40,20 @@ export const orderService = {
     // Cancelar pedido (usuario dueño)
     cancelOrder: async (id: string): Promise<void> => {
         await apiClient.put(`/api/v1/orders/${id}/cancel`);
+    },
+
+    createOrder: async (orderData: {
+        items: Array<{
+            productId: string;
+            productName: string;
+            unitPrice: number;
+            quantity: number;
+        }>;
+        shippingAddress?: string;
+        shippingCity?: string;
+        notes?: string;
+        }): Promise<OrderResponse> => {
+        const response = await apiClient.post('/api/v1/orders', orderData);
+        return response.data;
     }
 };

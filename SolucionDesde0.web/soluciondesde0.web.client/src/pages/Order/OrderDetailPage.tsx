@@ -30,11 +30,9 @@ import {
     getStatusLabel,
     getStatusColor,
     ORDER_STATUS_LABELS,
-    ORDER_STATUS_COLORS
 } from '../../types/order';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import UpdateIcon from '@mui/icons-material/Update';
-import ShoppingBagIcon from '@mui/icons-material/ShoppingBag';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import NotesIcon from '@mui/icons-material/Notes';
 
@@ -112,7 +110,7 @@ const OrderDetailPage = () => {
 
             setSuccess(true);
             setTimeout(() => {
-                fetchOrder(id); // Recargar datos
+                fetchOrder(id); 
                 setSuccess(false);
             }, 2000);
 
@@ -122,10 +120,6 @@ const OrderDetailPage = () => {
         } finally {
             setUpdating(false);
         }
-    };
-
-    const handleCancel = () => {
-        navigate('/orders');
     };
 
     if (loading) {

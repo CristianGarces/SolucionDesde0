@@ -15,6 +15,8 @@ import ProductCard from '../../components/ProductCard';
 import AddIcon from '@mui/icons-material/Add';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useNavigate } from 'react-router-dom';
+import { useCart } from '../../contexts/CartContext';
+
 
 const ProductsPage = () => {
     const { user } = useAuth();
@@ -22,6 +24,7 @@ const ProductsPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const navigate = useNavigate();
+    const { totalItems } = useCart();
 
     const isAdmin = user?.role === 'Admin';
 
@@ -79,10 +82,6 @@ const ProductsPage = () => {
         }
     };
 
-    const handleCart = () => {
-        console.log('Abrir carrito');
-    };
-
     return (
         <Container maxWidth="lg" sx={{ py: 4 }}>
             {/* Header */}
@@ -110,10 +109,10 @@ const ProductsPage = () => {
                     <Button
                         variant="contained"
                         startIcon={<ShoppingCartIcon />}
-                        onClick={handleCart}
+                        onClick={() => navigate('/cart')}
                         sx={{ textTransform: 'none' }}
                     >
-                        Carrito (0)
+                        Carrito ({totalItems})
                     </Button>
                 )}
             </Box>

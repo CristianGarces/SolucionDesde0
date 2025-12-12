@@ -18,6 +18,8 @@ import CreateUserPage from './pages/User/CreateUserPage';
 import EditUserPage from './pages/User/EditUserPage';
 import OrdersPage from './pages/Order/OrdersPage';
 import OrderDetailPage from './pages/Order/OrderDetailPage';
+import { CartProvider } from './contexts/CartContext';
+import CartPage from './pages/Cart/CartPage';
 
 
 const AppContent = () => {
@@ -68,6 +70,15 @@ const AppContent = () => {
                 isAuthenticated ? (
                     <MainLayout>
                         <EditProductPage />
+                    </MainLayout>
+                ) : <Navigate to="/login" />
+            } />
+
+            {/*  RUTA DEL CARRITO */}
+            <Route path="/cart" element={
+                isAuthenticated ? (
+                    <MainLayout>
+                        <CartPage />
                     </MainLayout>
                 ) : <Navigate to="/login" />
             } />
@@ -156,7 +167,9 @@ function App() {
     return (
         <Router>
             <AuthProvider>
-                <AppContent />
+                <CartProvider>  
+                    <AppContent />
+                </CartProvider>
             </AuthProvider>
         </Router>
     );
