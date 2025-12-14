@@ -47,7 +47,33 @@ const CartPage = () => {
     const [success, setSuccess] = useState(false);
     const [createdOrderId, setCreatedOrderId] = useState<string | null>(null);
 
+    // NUEVOS: Estados para errores de validacion
+    const [shippingAddressError, setShippingAddressError] = useState('');
+    const [shippingCityError, setShippingCityError] = useState('');
+
     const handleCreateOrder = async () => {
+        // Resetear errores
+        setShippingAddressError('');
+        setShippingCityError('');
+        setError(null);
+
+        // Validar campos requeridos
+        let hasError = false;
+
+        if (!shippingAddress.trim()) {
+            setShippingAddressError('La direccion es requerida');
+            hasError = true;
+        }
+
+        if (!shippingCity.trim()) {
+            setShippingCityError('La ciudad es requerida');
+            hasError = true;
+        }
+
+        if (hasError) {
+            return;
+        }
+
         if (items.length === 0) {
             setError('El carrito esta vacio');
             return;
@@ -128,7 +154,7 @@ const CartPage = () => {
                         Tu carrito esta vacio
                     </Typography>
                     <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-                        Añade algunos productos para continuar con tu compra
+                        Anade algunos productos para continuar con tu compra
                     </Typography>
                     <Button
                         variant="contained"
@@ -150,7 +176,7 @@ const CartPage = () => {
                         Mi Carrito
                     </Typography>
                     <Typography variant="body1" color="white">
-                        {totalItems} producto{totalItems !== 1 ? 's' : ''} - Total: {totalPrice.toFixed(2)} &euro;
+                        {totalItems} producto{totalItems !== 1 ? 's' : ''} • Total: {totalPrice.toFixed(2)} &euro;
                     </Typography>
                 </Box>
 
@@ -173,7 +199,7 @@ const CartPage = () => {
             {success ? (
                 <Paper elevation={3} sx={{ p: 4, textAlign: 'center', borderRadius: 2 }}>
                     <Typography variant="h5" gutterBottom color="success.main">
-                         Pedido creado exitosamente!
+                        Pedido creado exitosamente
                     </Typography>
 
                     <Typography variant="body1" sx={{ mb: 3 }}>
@@ -357,17 +383,39 @@ const CartPage = () => {
                                 <TextField
                                     label="Direccion de envio"
                                     value={shippingAddress}
-                                    onChange={(e) => setShippingAddress(e.target.value)}
+                                    onChange={(e) => {
+                                        setShippingAddress(e.target.value);
+                                        if (e.target.value.trim()) {
+                                            setShippingAddressError('');
+                                        }
+                                    }}
                                     fullWidth
                                     size="small"
+                                    required
+                                    error={!!shippingAddressError}
+                                    helperText={shippingAddressError}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
                                 />
 
                                 <TextField
                                     label="Ciudad"
                                     value={shippingCity}
-                                    onChange={(e) => setShippingCity(e.target.value)}
+                                    onChange={(e) => {
+                                        setShippingCity(e.target.value);
+                                        if (e.target.value.trim()) {
+                                            setShippingCityError('');
+                                        }
+                                    }}
                                     fullWidth
                                     size="small"
+                                    required
+                                    error={!!shippingCityError}
+                                    helperText={shippingCityError}
+                                    InputLabelProps={{
+                                        shrink: true,
+                                    }}
                                 />
 
                                 <TextField
