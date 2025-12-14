@@ -16,7 +16,7 @@ interface AddToCartButtonProps {
 }
 
 const AddToCartButton: React.FC<AddToCartButtonProps> = ({ product }) => {
-    const { addItem, getItemQuantity, updateQuantity } = useCart();
+    const { addItem, getItemQuantity } = useCart();
     const [quantity, setQuantity] = useState(1);
     const currentInCart = getItemQuantity(product.id);
 
@@ -114,7 +114,7 @@ const AddToCartButton: React.FC<AddToCartButtonProps> = ({ product }) => {
                     startIcon={<AddIcon />}
                     sx={{ ml: 1, textTransform: 'none' }}
                 >
-                    Añadir
+                    Anadir
                 </Button>
             </Box>
 

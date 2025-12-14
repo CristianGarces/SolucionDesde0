@@ -67,10 +67,10 @@ const OrdersPage = () => {
             <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 4 }}>
                 <Box>
                     <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', color: 'white' }}>
-                        {isAdmin ? 'Gestión de Pedidos' : 'Mis Pedidos'}
+                        {isAdmin ? 'Gestion de Pedidos' : 'Mis Pedidos'}
                     </Typography>
                     <Typography variant="body1" color="white">
-                        {orders.length} pedidos • Total: {getTotalOrdersValue().toFixed(2)} €
+                        {orders.length} pedidos - Total: {getTotalOrdersValue().toFixed(2)} &euro;
                     </Typography>
                 </Box>
             </Box>
@@ -100,8 +100,8 @@ const OrdersPage = () => {
                             </Typography>
                             <Typography variant="body2" color="text.secondary" sx={{ mt: 1, mb: 3 }}>
                                 {isAdmin
-                                    ? 'Los pedidos aparecerán aquí cuando los usuarios los creen'
-                                    : 'Cuando realices un pedido, aparecerá aquí'}
+                                    ? 'Los pedidos apareceran aqui cuando los usuarios los creen'
+                                    : 'Cuando realices un pedido, aparecera aqui'}
                             </Typography>
                         </Paper>
                     ) : (
@@ -148,7 +148,7 @@ const OrdersPage = () => {
 
                                                 <Box>
                                                     <Typography variant="body2" color="text.secondary">
-                                                        Artículos
+                                                        Articulos
                                                     </Typography>
                                                     <Typography variant="body1">
                                                         {order.itemCount} {order.itemCount === 1 ? 'producto' : 'productos'}
@@ -160,7 +160,7 @@ const OrdersPage = () => {
                                                         Total
                                                     </Typography>
                                                     <Typography variant="body1" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
-                                                        {order.totalAmount.toFixed(2)} €
+                                                        {order.totalAmount.toFixed(2)} &euro;
                                                     </Typography>
                                                 </Box>
                                             </Box>
