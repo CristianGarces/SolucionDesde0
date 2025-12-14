@@ -18,6 +18,29 @@ import type { CategoryResponse } from '../../types/categories';
 import AddIcon from '@mui/icons-material/Add';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { AxiosError } from 'axios';
+
+// Funcion especifica para errores de eliminar categoria
+const getDeleteCategoryErrorMessage = (error: unknown): string => {
+    if (error instanceof AxiosError) {
+        const errorData = error.response?.data;
+
+        if (errorData?.error) {
+            const backendError = errorData.error;
+            if (backendError.includes('Cannot delete category')) {
+                return `No se puede eliminar la categoria porque tiene productos asociados. Elimina primero los productos o cambiales de categoria.`;
+            }
+            return backendError;
+        }
+        return error.message || 'Error al eliminar categoria';
+    }
+
+    if (error instanceof Error) {
+        return error.message;
+    }
+
+    return 'Error desconocido al eliminar categoria';
+};
 
 const CategoriesPage = () => {
     const navigate = useNavigate();
@@ -73,27 +96,13 @@ const CategoriesPage = () => {
         } catch (err: unknown) {
             console.error('Error deleting category:', err);
 
-            let errorMessage = 'Error al eliminar categoría';
-
-            // Extraer mensaje específico del backend
-            if (err && typeof err === 'object' && 'response' in err) {
-                const axiosError = err as any;
-                const responseData = axiosError.response?.data;
-
-                if (responseData?.error) {
-                    const backendError = responseData.error;
-                    if (backendError.includes('Cannot delete category')) {
-                        errorMessage = `No se puede eliminar la categoria porque tiene productos asociados. Elimina primero los productos o cambiales de categoria.`;
-                    } else {
-                        errorMessage = backendError;
-                    }
-                }
-            }
+            // Usar la funcion especifica para manejar errores
+            const errorMessage = getDeleteCategoryErrorMessage(err);
             alert(errorMessage);
         }
     };
 
-    // Si no es admin, no mostrar nada (ya se redirige)
+    // Si no es admin, no mostrar nada 
     if (!isAdmin) {
         return null;
     }
@@ -156,7 +165,7 @@ const CategoriesPage = () => {
                             </Button>
                         </Paper>
                     ) : (
-                         <Grid container spacing={2} rowSpacing={10}>
+                        <Grid container spacing={2} rowSpacing={10}>
                             {categories.map((category) => (
                                 <Grid item xs={12} md={6} lg={4} key={category.id}>
                                     <Paper

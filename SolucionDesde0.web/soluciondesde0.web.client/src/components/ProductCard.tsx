@@ -1,4 +1,3 @@
-// components/ProductCard.tsx - Versión compacta
 import { Card, CardContent, Typography, Box, Chip, IconButton } from '@mui/material';
 import type { ProductResponse } from '../types/product';
 import EditIcon from '@mui/icons-material/Edit';
@@ -30,17 +29,17 @@ const ProductCard = ({ product, isAdmin = false, onEdit, onDelete }: ProductCard
             }}
         >
             <CardContent>
-                {/* PRIMERA FILA: Nombre */}
+                {/* Nombre */}
                 <Typography variant="h6" component="div" sx={{ fontWeight: 'bold', mb: 1 }}>
                     {product.name}
                 </Typography>
 
-                {/* DESCRIPCIÓN */}
+                {/* Descriopcion */}
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                     {product.description}
                 </Typography>
 
-                {/* SEGUNDA FILA: Precio, stock y botón (todo en la misma línea) */}
+                {/* Precio, stock y botón  */}
                 <Box sx={{
                     display: 'flex',
                     justifyContent: 'space-between',

@@ -15,7 +15,7 @@ import ProductCard from '../../components/ProductCard';
 import AddIcon from '@mui/icons-material/Add';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import { useNavigate } from 'react-router-dom';
-import { useCart } from '../../contexts/CartContext';
+import { useCart } from '../../hooks/useCart';
 
 
 const ProductsPage = () => {

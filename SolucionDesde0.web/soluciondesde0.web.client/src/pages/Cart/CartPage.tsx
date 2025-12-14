@@ -25,7 +25,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { orderService } from '../../api/orderService';
-import { useCart } from '../../contexts/CartContext';
+import { useCart } from '../../hooks/useCart';
 
 const CartPage = () => {
     const navigate = useNavigate();

@@ -18,8 +18,8 @@ import CreateUserPage from './pages/User/CreateUserPage';
 import EditUserPage from './pages/User/EditUserPage';
 import OrdersPage from './pages/Order/OrdersPage';
 import OrderDetailPage from './pages/Order/OrderDetailPage';
-import { CartProvider } from './contexts/CartContext';
 import CartPage from './pages/Cart/CartPage';
+import CartProvider from './contexts/CartContext';
 
 
 const AppContent = () => {

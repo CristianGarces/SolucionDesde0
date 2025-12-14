@@ -8,8 +8,8 @@ import {
 } from '@mui/material';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
-import { useCart } from '../contexts/CartContext';
 import type { ProductResponse } from '../types/product';
+import { useCart } from '../hooks/useCart';
 
 interface AddToCartButtonProps {
     product: ProductResponse;
