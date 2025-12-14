@@ -2,6 +2,7 @@
 using SolucionDesde0.Api.Orders.Models;
 using SolucionDesde0.Api.Orders.Services;
 using SolucionDesde0.API.Orders.Data;
+using System.Net.Http;
 using static SolucionDesde0.Api.Orders.Dto.OrderDtos;
 
 namespace SolucionDesde0.API.Orders.Services
@@ -10,11 +11,19 @@ namespace SolucionDesde0.API.Orders.Services
     {
         private readonly OrdersDbContext _context;
         private readonly ILogger<OrderService> _logger;
+        private readonly IHttpClientFactory _httpClientFactory;
+        private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public OrderService(OrdersDbContext context, ILogger<OrderService> logger)
+        public OrderService(
+            OrdersDbContext context,
+            ILogger<OrderService> logger,
+            IHttpClientFactory httpClientFactory,
+            IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _logger = logger;
+            _httpClientFactory = httpClientFactory;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<IEnumerable<OrderListResponse>> GetUserOrdersAsync(string userId)
@@ -48,45 +57,114 @@ namespace SolucionDesde0.API.Orders.Services
             return (MapToResponse(order), null);
         }
 
-        public async Task<(OrderResponse? Data, string? Error)> CreateAsync(string userId, CreateOrderRequest request)
+        public async Task<(OrderResponse? Data, string? Error)> CreateAsync(
+     string userId,
+     CreateOrderRequest request)
         {
-            var order = new Order
-            {
-                UserId = userId,
-                ShippingAddress = request.ShippingAddress,
-                ShippingCity = request.ShippingCity,
-                Notes = request.Notes,
-                Status = OrderStatus.Pending,
-                Items = new List<OrderItem>(),
-            };
+            _logger.LogInformation("=== CREANDO ORDEN CON REDUCCIÓN DE STOCK ===");
 
-            decimal totalAmount = 0;
+            var httpClient = _httpClientFactory.CreateClient("ProductService");
+            var successfulReductions = new List<(Guid ProductId, int Quantity)>();
 
-            foreach (var item in request.Items)
+            try
             {
-                var orderItem = new OrderItem
+                // PASO 1: Reducir stock para cada producto
+                foreach (var item in request.Items)
                 {
-                    Order = order,
+                    _logger.LogInformation("Reduciendo stock para {ProductName}: -{Quantity}",
+                        item.ProductName, item.Quantity);
+
+                    // Llamar al endpoint de stock con cantidad NEGATIVA
+                    var response = await httpClient.PatchAsJsonAsync(
+                        $"api/v1/products/{item.ProductId}/stock",
+                        -item.Quantity);
+
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        var error = await response.Content.ReadAsStringAsync();
+                        _logger.LogError("❌ Error reduciendo stock: {StatusCode} - {Error}",
+                            response.StatusCode, error);
+
+                        // Compensar: revertir reducciones anteriores
+                        await CompensateStockReductions(httpClient, successfulReductions);
+                        return (null, $"No hay stock suficiente para {item.ProductName}");
+                    }
+
+                    successfulReductions.Add((item.ProductId, item.Quantity));
+                    _logger.LogInformation("✅ Stock reducido para {ProductName}", item.ProductName);
+                }
+
+                // PASO 2: Crear la orden (solo si stock se redujo exitosamente)
+                _logger.LogInformation("Creando orden en base de datos...");
+
+                var order = new Order
+                {
                     Id = Guid.NewGuid(),
-                    OrderId = order.Id,
-                    ProductId = item.ProductId,
-                    Quantity = item.Quantity,
-                    UnitPrice = item.UnitPrice,
-                    ProductName = item.ProductName
+                    UserId = userId,
+                    ShippingAddress = request.ShippingAddress,
+                    ShippingCity = request.ShippingCity,
+                    Notes = request.Notes,
+                    Status = OrderStatus.Confirmed, // ¡CONFIRMADA porque stock OK!
+                    Items = new List<OrderItem>(),
+                    CreatedAt = DateTime.UtcNow
                 };
 
-                order.Items.Add(orderItem);
-                totalAmount += orderItem.Subtotal;
+                decimal totalAmount = 0;
+                foreach (var item in request.Items)
+                {
+                    var orderItem = new OrderItem
+                    {
+                        Id = Guid.NewGuid(),
+                        OrderId = order.Id,
+                        ProductId = item.ProductId,
+                        Quantity = item.Quantity,
+                        UnitPrice = item.UnitPrice,
+                        ProductName = item.ProductName
+                    };
+                    order.Items.Add(orderItem);
+                    totalAmount += orderItem.Subtotal;
+                }
+                order.TotalAmount = totalAmount;
+
+                _context.Orders.Add(order);
+                await _context.SaveChangesAsync();
+
+                _logger.LogInformation("✅✅✅ Orden {OrderId} creada EXITOSAMENTE con stock reducido", order.Id);
+                return (MapToResponse(order), null);
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "❌ ERROR creando orden");
 
-            order.TotalAmount = totalAmount;
+                // Compensar todas las reducciones si hubo error
+                await CompensateStockReductions(httpClient, successfulReductions);
+                return (null, "Error creando orden. Stock ha sido restaurado.");
+            }
+        }
 
-            _context.Orders.Add(order);
-            await _context.SaveChangesAsync();
+        private async Task CompensateStockReductions(
+            HttpClient httpClient,
+            List<(Guid ProductId, int Quantity)> reductions)
+        {
+            if (!reductions.Any()) return;
 
-            _logger.LogInformation("Order created: {OrderId} for user {UserId}", order.Id, userId);
+            _logger.LogInformation("Compensando {Count} reducciones de stock...", reductions.Count);
 
-            return (MapToResponse(order), null);
+            foreach (var (productId, quantity) in reductions)
+            {
+                try
+                {
+                    // Aumentar stock
+                    await httpClient.PatchAsJsonAsync(
+                        $"api/v1/products/{productId}/stock",
+                        quantity);
+                    _logger.LogInformation("Stock compensado para {ProductId}", productId);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "Error compensando stock para {ProductId}", productId);
+                }
+            }
         }
 
         public async Task<(bool Success, string? Error)> CancelAsync(Guid id, string userId)

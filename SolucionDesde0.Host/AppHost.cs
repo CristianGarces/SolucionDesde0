@@ -45,6 +45,8 @@ var product = builder.AddProject<Projects.SolucionDesde0_API_Product>("soluciond
 
 var orders = builder.AddProject<Projects.SolucionDesde0_Api_Orders>("soluciondesde0-api-orders")
     .WaitFor(ordersDb)
+    .WaitFor(product)
+    .WithReference(product)
     .WithReference(ordersDb);
 
 

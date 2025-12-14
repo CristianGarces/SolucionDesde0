@@ -18,15 +18,25 @@ builder.AddServiceDefaults();
 
 builder.AddNpgsqlDbContext<OrdersDbContext>("SolucionDesde0OrdersDb");
 
-
-
 // Add services to the container.
-
 builder.Services.AddControllers();
+
+// Add HttpClient for Product
+if (builder.Environment.IsDevelopment())
+{
+    // 1. PRIMERO: Prueba SIN Service Discovery (localhost)
+    builder.Services.AddHttpClient("ProductService", client =>
+    {
+        client.BaseAddress = new Uri("http://localhost:5053");
+        client.Timeout = TimeSpan.FromSeconds(30);
+    });
+}
+
 
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IOrderService, OrderService>();
 
 builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderRequestValidator>();

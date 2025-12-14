@@ -33,6 +33,7 @@ namespace SolucionDesde0.API.Product.Controllers
 
         // GET: api/products
         [HttpGet]
+        [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<ProductResponse>>> GetAllProducts()
         {
             _logger.LogInformation("Getting all products");
@@ -155,7 +156,7 @@ namespace SolucionDesde0.API.Product.Controllers
 
         // PATCH: api/products/{id}/stock
         [HttpPatch("{id}/stock")]
-        [Authorize(Roles = "Admin")]
+        [AllowAnonymous]
         public async Task<ActionResult> UpdateStock(Guid id, [FromBody] int quantityChange)
         {
             _logger.LogInformation("Updating stock for product ID: {ProductId}, quantity change: {QuantityChange}",
