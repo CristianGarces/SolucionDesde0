@@ -121,7 +121,7 @@ namespace SolucionDesde0.API.Orders.Services
                     o.Status.ToString(),
                     o.TotalAmount,
                     o.Items.Count,
-                    o.CreatedAt.ToLocalTime()))
+                    o.CreatedAt))
                 .ToListAsync();
 
             return orders;

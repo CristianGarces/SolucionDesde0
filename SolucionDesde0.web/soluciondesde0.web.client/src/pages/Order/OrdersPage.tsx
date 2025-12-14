@@ -8,8 +8,7 @@ import {
     Alert,
     Grid,
     Paper,
-    Chip,
-    IconButton
+    Chip
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
@@ -132,7 +131,7 @@ const OrdersPage = () => {
                                                 </Typography>
                                                 <Chip
                                                     label={getStatusLabel(order.status)}
-                                                    color={getStatusColor(order.status) as any}
+                                                    color={getStatusColor(order.status) as 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'}
                                                     size="small"
                                                 />
                                             </Box>

@@ -64,7 +64,7 @@ const OrderDetailPage = () => {
             setLoading(true);
             setError(null);
 
-            // Si es admin, usa el endpoint de admin que tiene más información
+            // Si es admin, usa el endpoint de admin que tiene mas informacion
             const data = isAdmin
                 ? await orderService.getOrderByIdForAdmin(orderId)
                 : await orderService.getOrderById(orderId);
@@ -86,7 +86,7 @@ const OrderDetailPage = () => {
         }
     };
 
-    // Función para convertir string de status a enum
+    // Funcion para convertir string de status a enum
     const convertStatusToEnum = (statusString: string): OrderStatus => {
         const statusMap: Record<string, OrderStatus> = {
             'Pending': OrderStatus.Pending,
@@ -162,7 +162,7 @@ const OrderDetailPage = () => {
 
     return (
         <Container maxWidth="lg" sx={{ py: 4 }}>
-            {/* Botón volver */}
+            {/* Boton volver */}
             <Button
                 startIcon={<ArrowBackIcon />}
                 onClick={() => navigate('/orders')}
@@ -181,30 +181,31 @@ const OrderDetailPage = () => {
                         <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mt: 1 }}>
                             <Chip
                                 label={getStatusLabel(order.status)}
-                                color={getStatusColor(order.status) as any}
+                                color={getStatusColor(order.status) as 'default' | 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning'}
                                 size="medium"
                             />
                             <Typography variant="body2" color="text.secondary">
                                 Creado el {formatOrderDate(order.createdAt)}
+                                {isAdmin && `, por el Usuario: ${order.userId}` }
                             </Typography>
                         </Box>
                     </Box>
 
                     <Typography variant="h5" color="primary" sx={{ fontWeight: 'bold' }}>
-                        {order.totalAmount.toFixed(2)} €
+                        {order.totalAmount.toFixed(2)} &euro;
                     </Typography>
                 </Box>
 
-                {/* Información del pedido */}
+                {/* Informacion del pedido */}
                 <Grid container spacing={3} sx={{ mb: 4 }}>
-                    {/* Información de envío */}
+                    {/* Informacion de envio */}
                     {(order.shippingAddress || order.shippingCity) && (
                         <Grid item xs={12} md={6}>
                             <Paper sx={{ p: 3, height: '100%' }}>
                                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                                     <LocationOnIcon sx={{ mr: 1, color: 'primary.main' }} />
                                     <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                                        Dirección de envío
+                                        Direccion de envio
                                     </Typography>
                                 </Box>
                                 {order.shippingAddress && (
@@ -240,6 +241,7 @@ const OrderDetailPage = () => {
                 </Grid>
 
                 {/* Tabla de productos */}
+                <Box sx={{ height: 20 }} />
                 <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
                     Productos ({order.items.length})
                 </Typography>
@@ -264,11 +266,11 @@ const OrderDetailPage = () => {
                                             ID: {item.productId.substring(0, 8)}...
                                         </Typography>
                                     </TableCell>
-                                    <TableCell align="right">{item.unitPrice.toFixed(2)} €</TableCell>
+                                    <TableCell align="right">{item.unitPrice.toFixed(2)} &euro;</TableCell>
                                     <TableCell align="right">{item.quantity}</TableCell>
                                     <TableCell align="right">
                                         <Typography fontWeight="bold">
-                                            {item.subtotal.toFixed(2)} €
+                                            {item.subtotal.toFixed(2)} &euro;
                                         </Typography>
                                     </TableCell>
                                 </TableRow>
@@ -281,7 +283,7 @@ const OrderDetailPage = () => {
                                 </TableCell>
                                 <TableCell align="right">
                                     <Typography variant="h6" color="primary" sx={{ fontWeight: 'bold' }}>
-                                        {order.totalAmount.toFixed(2)} €
+                                        {order.totalAmount.toFixed(2)} &euro;
                                     </Typography>
                                 </TableCell>
                             </TableRow>
@@ -289,7 +291,7 @@ const OrderDetailPage = () => {
                     </Table>
                 </TableContainer>
 
-                {/* Actualización de estado (solo Admin) */}
+                {/* Actualizacion de estado (solo Admin) */}
                 {isAdmin && (
                     <Paper sx={{ p: 3, mt: 3 }}>
                         <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
@@ -298,7 +300,7 @@ const OrderDetailPage = () => {
 
                         {success && (
                             <Alert severity="success" sx={{ mb: 3 }}>
-                                ¡Estado actualizado exitosamente!
+                                Estado actualizado exitosamente!
                             </Alert>
                         )}
 
