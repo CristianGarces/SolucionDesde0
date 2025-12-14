@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using RedisRateLimiting;
 using SolucionDesde0.API.Gateway.Extensions;
 using SolucionDesde0.ServiceDefaults;
+using SolucionDesde0.ServiceDefaults.Shared;
 using StackExchange.Redis;
 using System.Text;
 
@@ -41,20 +42,7 @@ builder.Services.AddRateLimiter(rateLimiterOptions =>
 });
 
 // Config JWT Authentication
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-        .AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = builder.Configuration.GetSection("JWT:Issuer").Value!,
-                ValidAudience = builder.Configuration.GetSection("JWT:Audience").Value!,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JWT:SecretKey").Value!))
-            };
-        });
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 // Para peticiones del front
 builder.Services.AddCors(options =>

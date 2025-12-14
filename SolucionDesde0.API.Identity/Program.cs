@@ -13,6 +13,7 @@ using SolucionDesde0.API.Identity.Services.Auth;
 using SolucionDesde0.API.Identity.Services.Roles;
 using SolucionDesde0.API.Identity.Services.User;
 using SolucionDesde0.ServiceDefaults;
+using SolucionDesde0.ServiceDefaults.Shared;
 using System.Text;
 using Tienda.Identity.Data;
 
@@ -67,11 +68,6 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
     options.Password.RequireNonAlphanumeric = true;
     options.Password.RequiredLength = 8;
 
-    //// Lockout settings
-    //options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
-    //options.Lockout.MaxFailedAccessAttempts = 5;
-    //options.Lockout.AllowedForNewUsers = true;
-
     // User settings
     options.User.RequireUniqueEmail = true;
 })
@@ -96,23 +92,7 @@ builder.Services.AddApiVersioning(options =>
 });
 
 // Add JWT configuration
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-        .AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = builder.Configuration.GetSection("JWT:Issuer").Value!,
-                ValidAudience = builder.Configuration.GetSection("JWT:Audience").Value!,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JWT:SecretKey").Value!))
-            };
-        });
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 builder.Services.AddAuthorization();
 

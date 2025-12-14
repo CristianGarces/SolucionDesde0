@@ -47,7 +47,7 @@ const CartPage = () => {
     const [success, setSuccess] = useState(false);
     const [createdOrderId, setCreatedOrderId] = useState<string | null>(null);
 
-    // NUEVOS: Estados para errores de validacion
+    // Estados para errores de validacion
     const [shippingAddressError, setShippingAddressError] = useState('');
     const [shippingCityError, setShippingCityError] = useState('');
 
@@ -111,7 +111,7 @@ const CartPage = () => {
             //Guardar el ID del pedido creado
             setCreatedOrderId(order.id);
 
-            // Mostrar exito (pero NO redirigir automaticamente)
+            // Mostrar exito 
             setSuccess(true);
 
         } catch (err: unknown) {
@@ -176,7 +176,7 @@ const CartPage = () => {
                         Mi Carrito
                     </Typography>
                     <Typography variant="body1" color="white">
-                        {totalItems} producto{totalItems !== 1 ? 's' : ''} • Total: {totalPrice.toFixed(2)} &euro;
+                        {totalItems} producto{totalItems !== 1 ? 's' : ''} - Total: {totalPrice.toFixed(2)} &euro;
                     </Typography>
                 </Box>
 

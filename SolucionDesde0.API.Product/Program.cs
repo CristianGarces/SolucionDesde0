@@ -9,6 +9,7 @@ using SolucionDesde0.API.Product.Services;
 using SolucionDesde0.API.Product.Validations.CategoriesVal;
 using SolucionDesde0.API.Product.Validations.ProductsVal;
 using SolucionDesde0.ServiceDefaults;
+using SolucionDesde0.ServiceDefaults.Shared;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -33,23 +34,7 @@ builder.Services.AddScoped<IValidator<CreateProductRequest>, CreateProductReques
 builder.Services.AddScoped<IValidator<UpdateProductRequest>, UpdateProductRequestValidator>();
 
 // JWT Authentication
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-        .AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = builder.Configuration.GetSection("JWT:Issuer").Value!,
-                ValidAudience = builder.Configuration.GetSection("JWT:Audience").Value!,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JWT:SecretKey").Value!))
-            };
-        });
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 // Versioning
 builder.Services.AddApiVersioning(options =>

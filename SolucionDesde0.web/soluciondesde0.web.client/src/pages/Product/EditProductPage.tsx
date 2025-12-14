@@ -379,7 +379,7 @@ const EditProductPage = () => {
                                     <strong>ID:</strong> {product.id}
                                 </Typography>
                                 <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                                    <strong>Creado por:</strong> Usuario ID: {product.createdByUserId}
+                                    <strong>Creado por el usuario con Id:</strong> {product.createdByUserId}
                                 </Typography>
                             </Box>
                         )}

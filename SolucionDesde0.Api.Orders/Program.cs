@@ -9,6 +9,7 @@ using SolucionDesde0.API.Orders.Data;
 using SolucionDesde0.API.Orders.Services;
 using SolucionDesde0.API.Orders.Validations;
 using SolucionDesde0.ServiceDefaults;
+using SolucionDesde0.ServiceDefaults.Shared;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -32,23 +33,7 @@ builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderRequestValidator
 builder.Services.AddValidatorsFromAssemblyContaining<UpdateOrderStatusRequestValidator>();
 
 // JWT Authentication
-builder.Services.AddAuthentication(options =>
-{
-    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
-})
-        .AddJwtBearer(options =>
-        {
-            options.TokenValidationParameters = new TokenValidationParameters
-            {
-                ValidateIssuer = true,
-                ValidateAudience = true,
-                ValidateLifetime = true,
-                ValidateIssuerSigningKey = true,
-                ValidIssuer = builder.Configuration.GetSection("JWT:Issuer").Value!,
-                ValidAudience = builder.Configuration.GetSection("JWT:Audience").Value!,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("JWT:SecretKey").Value!))
-            };
-        });
+builder.Services.AddJwtAuthentication(builder.Configuration);
 
 // Versioning
 builder.Services.AddApiVersioning(options =>
