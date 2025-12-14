@@ -68,7 +68,7 @@ namespace SolucionDesde0.API.Orders.Services
 
             try
             {
-                // PASO 1: Reducir stock para cada producto
+                // Reducir stock para cada producto
                 foreach (var item in request.Items)
                 {
                     _logger.LogInformation("Reduciendo stock para {ProductName}: -{Quantity}",
@@ -82,7 +82,7 @@ namespace SolucionDesde0.API.Orders.Services
                     if (!response.IsSuccessStatusCode)
                     {
                         var error = await response.Content.ReadAsStringAsync();
-                        _logger.LogError("❌ Error reduciendo stock: {StatusCode} - {Error}",
+                        _logger.LogError("Error reduciendo stock: {StatusCode} - {Error}",
                             response.StatusCode, error);
 
                         // Compensar: revertir reducciones anteriores
@@ -91,10 +91,10 @@ namespace SolucionDesde0.API.Orders.Services
                     }
 
                     successfulReductions.Add((item.ProductId, item.Quantity));
-                    _logger.LogInformation("✅ Stock reducido para {ProductName}", item.ProductName);
+                    _logger.LogInformation("Stock reducido para {ProductName}", item.ProductName);
                 }
 
-                // PASO 2: Crear la orden (solo si stock se redujo exitosamente)
+                // Crear la orden (solo si stock se redujo exitosamente)
                 _logger.LogInformation("Creando orden en base de datos...");
 
                 var order = new Order
@@ -104,7 +104,7 @@ namespace SolucionDesde0.API.Orders.Services
                     ShippingAddress = request.ShippingAddress,
                     ShippingCity = request.ShippingCity,
                     Notes = request.Notes,
-                    Status = OrderStatus.Confirmed, // ¡CONFIRMADA porque stock OK!
+                    Status = OrderStatus.Pending,
                     Items = new List<OrderItem>(),
                     CreatedAt = DateTime.UtcNow
                 };
@@ -129,12 +129,12 @@ namespace SolucionDesde0.API.Orders.Services
                 _context.Orders.Add(order);
                 await _context.SaveChangesAsync();
 
-                _logger.LogInformation("✅✅✅ Orden {OrderId} creada EXITOSAMENTE con stock reducido", order.Id);
+                _logger.LogInformation("Orden {OrderId} creada EXITOSAMENTE con stock reducido", order.Id);
                 return (MapToResponse(order), null);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "❌ ERROR creando orden");
+                _logger.LogError(ex, "ERROR creando orden");
 
                 // Compensar todas las reducciones si hubo error
                 await CompensateStockReductions(httpClient, successfulReductions);

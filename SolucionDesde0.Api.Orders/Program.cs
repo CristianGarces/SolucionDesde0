@@ -1,16 +1,12 @@
 using Asp.Versioning;
 using FluentValidation;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 using SolucionDesde0.Api.Orders.Services;
 using SolucionDesde0.API.Orders.Data;
 using SolucionDesde0.API.Orders.Services;
 using SolucionDesde0.API.Orders.Validations;
 using SolucionDesde0.ServiceDefaults;
 using SolucionDesde0.ServiceDefaults.Shared;
-using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,21 +16,14 @@ builder.AddNpgsqlDbContext<OrdersDbContext>("SolucionDesde0OrdersDb");
 
 // Add services to the container.
 builder.Services.AddControllers();
-
-// Add HttpClient for Product
-if (builder.Environment.IsDevelopment())
-{
-    // 1. PRIMERO: Prueba SIN Service Discovery (localhost)
-    builder.Services.AddHttpClient("ProductService", client =>
-    {
-        client.BaseAddress = new Uri("http://localhost:5053");
-        client.Timeout = TimeSpan.FromSeconds(30);
-    });
-}
-
-
-// Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+
+builder.Services.AddHttpClient("ProductService", client =>
+{
+    client.BaseAddress = new Uri("https+http://soluciondesde0-api-product");
+
+});
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IOrderService, OrderService>();
@@ -55,7 +44,7 @@ builder.Services.AddApiVersioning(options =>
         new UrlSegmentApiVersionReader(),
         new HeaderApiVersionReader("X-Api-Version"));
 })
-.AddMvc() 
+.AddMvc()
 .AddApiExplorer(options =>
 {
     options.GroupNameFormat = "'v'V";
@@ -75,11 +64,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseAuthentication();
-
 app.UseAuthorization();
-
 app.MapControllers();
 
 app.Run();
