@@ -123,7 +123,7 @@ if (app.Environment.IsDevelopment())
         }
     }
 
-    await DefaultAdminSeeder.SeedAdminUser(app.Services);
+    await DefaultAdminSeeder.SeedAdminUser(app.Services, builder.Configuration);
 }
 
 app.UseHttpsRedirection();
