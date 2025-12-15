@@ -1,0 +1,40 @@
+{
+  "projectPath": ".",
+  "outputPath": "./k8s-output",
+  "containerImageTags": [
+    "latest"
+  ],
+  "imagePullPolicy": "IfNotPresent",
+  "containerBuilder": "docker",
+  "outputFormat": "kustomize",
+  "skipFinalKustomizeGeneration": false,
+  "privateRegistryEmail": "aspir8@aka.ms",
+  "includeDashboard": true,
+  "useCustomNamespace": false,
+  "secrets": {
+    "salt": "UzNcdAaUFMSNsuJ9",
+    "hash": "E85RYFpRMnbCDBeajo3Hu8B0mZdG3jh7PZsZEvD0v8Y=",
+    "secrets": {
+      "postgres-password": {
+        "value": "UzNcdAaUFMSNsuJ9ctXBOB3RjgS/uDbfgsDMWbzkxvJwQJ7y4sDLixThK8bAyZI6QoQ="
+      },
+      "redis-password": {
+        "value": "UzNcdAaUFMSNsuJ95CuiUhQ7KJIjV0iK81U26a3Jx8VLaZ/fld\u002BqhQvcPZ3vrYQmBoU="
+      },
+      "rabbitmq-password": {
+        "value": "UzNcdAaUFMSNsuJ9ix1M1Afs3mQKt5p8rs\u002BVI87xnshbSYHF6uKutTHkKtmKu5opDYY="
+      },
+      "postgres": {
+        "POSTGRES_PASSWORD": "UzNcdAaUFMSNsuJ9ctXBOB3RjgS/uDbfgsDMWbzkxvJwQJ7y4sDLixThK8bAyZI6QoQ="
+      },
+      "redis": {},
+      "SolucionDesde0Db": {},
+      "SolucionDesde0ProductDb": {},
+      "SolucionDesde0OrdersDb": {},
+      "rabbitmq": {},
+      "maildev": {},
+      "soluciondesde0kubernetes-dashboard": {}
+    }
+  },
+  "processAllComponents": true
+}

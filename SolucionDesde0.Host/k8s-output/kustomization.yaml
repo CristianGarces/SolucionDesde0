@@ -1,0 +1,12 @@
+resources:
+- postgres
+- redis
+- rabbitmq
+- maildev
+- soluciondesde0kubernetes-dashboard
+- dashboard.yaml
+
+generatorOptions:
+  disableNameSuffixHash: true
+
+

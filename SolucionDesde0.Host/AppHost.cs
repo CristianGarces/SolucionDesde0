@@ -1,5 +1,7 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
+builder.AddDockerComposeEnvironment("soluciondesde0kubernetes");
+
 // PostgreSQL
 var postgres = builder
     .AddPostgres("postgres")

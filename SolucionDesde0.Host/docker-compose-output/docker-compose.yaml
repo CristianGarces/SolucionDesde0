@@ -1,0 +1,226 @@
+services:
+  soluciondesde0kubernetes-dashboard:
+    image: "mcr.microsoft.com/dotnet/nightly/aspire-dashboard:latest"
+    expose:
+      - "18888"
+      - "18889"
+    networks:
+      - "aspire"
+    restart: "always"
+  postgres:
+    image: "docker.io/library/postgres:17.6"
+    environment:
+      POSTGRES_HOST_AUTH_METHOD: "scram-sha-256"
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256 --auth-local=scram-sha-256"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+    expose:
+      - "5432"
+    volumes:
+      - type: "volume"
+        target: "/var/lib/postgresql/data"
+        source: "soluciondesde0.host-ebf5aaf548-postgres-data"
+        read_only: false
+    networks:
+      - "aspire"
+  redis:
+    image: "docker.io/library/redis:8.2"
+    command:
+      - "-c"
+      - "redis-server --requirepass $$REDIS_PASSWORD --save 60 1"
+    entrypoint:
+      - "/bin/sh"
+    environment:
+      REDIS_PASSWORD: "${REDIS_PASSWORD}"
+    expose:
+      - "6379"
+    volumes:
+      - type: "volume"
+        target: "/data"
+        source: "soluciondesde0.host-ebf5aaf548-redis-data"
+        read_only: false
+    networks:
+      - "aspire"
+  rabbitmq:
+    image: "docker.io/library/rabbitmq:4.2-management"
+    environment:
+      RABBITMQ_DEFAULT_USER: "guest"
+      RABBITMQ_DEFAULT_PASS: "${RABBITMQ_PASSWORD}"
+    expose:
+      - "5672"
+      - "15672"
+    volumes:
+      - type: "volume"
+        target: "/var/lib/rabbitmq"
+        source: "soluciondesde0.host-ebf5aaf548-rabbitmq-data"
+        read_only: false
+    networks:
+      - "aspire"
+  maildev:
+    image: "maildev/maildev:latest"
+    expose:
+      - "1080"
+      - "1025"
+    networks:
+      - "aspire"
+  soluciondesde0-api-identity:
+    image: "${SOLUCIONDESDE0_API_IDENTITY_IMAGE}"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      HTTP_PORTS: "${SOLUCIONDESDE0_API_IDENTITY_PORT}"
+      ConnectionStrings__SolucionDesde0Db: "Host=postgres;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=SolucionDesde0Db"
+      SOLUCIONDESDE0DB_HOST: "postgres"
+      SOLUCIONDESDE0DB_PORT: "5432"
+      SOLUCIONDESDE0DB_USERNAME: "postgres"
+      SOLUCIONDESDE0DB_PASSWORD: "${POSTGRES_PASSWORD}"
+      SOLUCIONDESDE0DB_URI: "postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/SolucionDesde0Db"
+      SOLUCIONDESDE0DB_JDBCCONNECTIONSTRING: "jdbc:postgresql://postgres:5432/SolucionDesde0Db"
+      SOLUCIONDESDE0DB_DATABASE: "SolucionDesde0Db"
+      ConnectionStrings__rabbitmq: "amqp://guest:${RABBITMQ_PASSWORD}@rabbitmq:5672"
+      RABBITMQ_HOST: "rabbitmq"
+      RABBITMQ_PORT: "5672"
+      RABBITMQ_USERNAME: "guest"
+      RABBITMQ_PASSWORD: "${RABBITMQ_PASSWORD}"
+      RABBITMQ_URI: "amqp://guest:${RABBITMQ_PASSWORD}@rabbitmq:5672"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://soluciondesde0kubernetes-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "soluciondesde0-api-identity"
+    expose:
+      - "${SOLUCIONDESDE0_API_IDENTITY_PORT}"
+    depends_on:
+      postgres:
+        condition: "service_started"
+      rabbitmq:
+        condition: "service_started"
+    networks:
+      - "aspire"
+  soluciondesde0-api-product:
+    image: "${SOLUCIONDESDE0_API_PRODUCT_IMAGE}"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      HTTP_PORTS: "${SOLUCIONDESDE0_API_PRODUCT_PORT}"
+      ConnectionStrings__SolucionDesde0ProductDb: "Host=postgres;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=SolucionDesde0ProductDb"
+      SOLUCIONDESDE0PRODUCTDB_HOST: "postgres"
+      SOLUCIONDESDE0PRODUCTDB_PORT: "5432"
+      SOLUCIONDESDE0PRODUCTDB_USERNAME: "postgres"
+      SOLUCIONDESDE0PRODUCTDB_PASSWORD: "${POSTGRES_PASSWORD}"
+      SOLUCIONDESDE0PRODUCTDB_URI: "postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/SolucionDesde0ProductDb"
+      SOLUCIONDESDE0PRODUCTDB_JDBCCONNECTIONSTRING: "jdbc:postgresql://postgres:5432/SolucionDesde0ProductDb"
+      SOLUCIONDESDE0PRODUCTDB_DATABASE: "SolucionDesde0ProductDb"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://soluciondesde0kubernetes-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "soluciondesde0-api-product"
+    expose:
+      - "${SOLUCIONDESDE0_API_PRODUCT_PORT}"
+    depends_on:
+      postgres:
+        condition: "service_started"
+    networks:
+      - "aspire"
+  soluciondesde0-api-orders:
+    image: "${SOLUCIONDESDE0_API_ORDERS_IMAGE}"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      HTTP_PORTS: "${SOLUCIONDESDE0_API_ORDERS_PORT}"
+      SOLUCIONDESDE0-API-PRODUCT_HTTP: "http://soluciondesde0-api-product:${SOLUCIONDESDE0_API_PRODUCT_PORT}"
+      services__soluciondesde0-api-product__http__0: "http://soluciondesde0-api-product:${SOLUCIONDESDE0_API_PRODUCT_PORT}"
+      SOLUCIONDESDE0-API-PRODUCT_HTTPS: "https://soluciondesde0-api-product:${SOLUCIONDESDE0_API_PRODUCT_PORT}"
+      ConnectionStrings__SolucionDesde0OrdersDb: "Host=postgres;Port=5432;Username=postgres;Password=${POSTGRES_PASSWORD};Database=SolucionDesde0OrdersDb"
+      SOLUCIONDESDE0ORDERSDB_HOST: "postgres"
+      SOLUCIONDESDE0ORDERSDB_PORT: "5432"
+      SOLUCIONDESDE0ORDERSDB_USERNAME: "postgres"
+      SOLUCIONDESDE0ORDERSDB_PASSWORD: "${POSTGRES_PASSWORD}"
+      SOLUCIONDESDE0ORDERSDB_URI: "postgresql://postgres:${POSTGRES_PASSWORD}@postgres:5432/SolucionDesde0OrdersDb"
+      SOLUCIONDESDE0ORDERSDB_JDBCCONNECTIONSTRING: "jdbc:postgresql://postgres:5432/SolucionDesde0OrdersDb"
+      SOLUCIONDESDE0ORDERSDB_DATABASE: "SolucionDesde0OrdersDb"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://soluciondesde0kubernetes-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "soluciondesde0-api-orders"
+    expose:
+      - "${SOLUCIONDESDE0_API_ORDERS_PORT}"
+    depends_on:
+      postgres:
+        condition: "service_started"
+      soluciondesde0-api-product:
+        condition: "service_started"
+    networks:
+      - "aspire"
+  soluciondesde0-notification:
+    image: "${SOLUCIONDESDE0_NOTIFICATION_IMAGE}"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      ConnectionStrings__rabbitmq: "amqp://guest:${RABBITMQ_PASSWORD}@rabbitmq:5672"
+      RABBITMQ_HOST: "rabbitmq"
+      RABBITMQ_PORT: "5672"
+      RABBITMQ_USERNAME: "guest"
+      RABBITMQ_PASSWORD: "${RABBITMQ_PASSWORD}"
+      RABBITMQ_URI: "amqp://guest:${RABBITMQ_PASSWORD}@rabbitmq:5672"
+      Email__SmtpHost: "maildev"
+      Email__SmtpPort: "1025"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://soluciondesde0kubernetes-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "soluciondesde0-notification"
+    depends_on:
+      rabbitmq:
+        condition: "service_started"
+    networks:
+      - "aspire"
+  soluciondesde0-api-gateway:
+    image: "${SOLUCIONDESDE0_API_GATEWAY_IMAGE}"
+    environment:
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EXCEPTION_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_EMIT_EVENT_LOG_ATTRIBUTES: "true"
+      OTEL_DOTNET_EXPERIMENTAL_OTLP_RETRY: "in_memory"
+      ASPNETCORE_FORWARDEDHEADERS_ENABLED: "true"
+      HTTP_PORTS: "${SOLUCIONDESDE0_API_GATEWAY_PORT}"
+      SOLUCIONDESDE0-API-IDENTITY_HTTP: "http://soluciondesde0-api-identity:${SOLUCIONDESDE0_API_IDENTITY_PORT}"
+      services__soluciondesde0-api-identity__http__0: "http://soluciondesde0-api-identity:${SOLUCIONDESDE0_API_IDENTITY_PORT}"
+      SOLUCIONDESDE0-API-IDENTITY_HTTPS: "https://soluciondesde0-api-identity:${SOLUCIONDESDE0_API_IDENTITY_PORT}"
+      SOLUCIONDESDE0-API-PRODUCT_HTTP: "http://soluciondesde0-api-product:${SOLUCIONDESDE0_API_PRODUCT_PORT}"
+      services__soluciondesde0-api-product__http__0: "http://soluciondesde0-api-product:${SOLUCIONDESDE0_API_PRODUCT_PORT}"
+      SOLUCIONDESDE0-API-PRODUCT_HTTPS: "https://soluciondesde0-api-product:${SOLUCIONDESDE0_API_PRODUCT_PORT}"
+      SOLUCIONDESDE0-API-ORDERS_HTTP: "http://soluciondesde0-api-orders:${SOLUCIONDESDE0_API_ORDERS_PORT}"
+      services__soluciondesde0-api-orders__http__0: "http://soluciondesde0-api-orders:${SOLUCIONDESDE0_API_ORDERS_PORT}"
+      SOLUCIONDESDE0-API-ORDERS_HTTPS: "https://soluciondesde0-api-orders:${SOLUCIONDESDE0_API_ORDERS_PORT}"
+      ConnectionStrings__redis: "redis:6379,password=${REDIS_PASSWORD}"
+      REDIS_HOST: "redis"
+      REDIS_PORT: "6379"
+      REDIS_PASSWORD: "${REDIS_PASSWORD}"
+      REDIS_URI: "redis://:${REDIS_PASSWORD}@redis:6379"
+      OTEL_EXPORTER_OTLP_ENDPOINT: "http://soluciondesde0kubernetes-dashboard:18889"
+      OTEL_EXPORTER_OTLP_PROTOCOL: "grpc"
+      OTEL_SERVICE_NAME: "soluciondesde0-api-gateway"
+    expose:
+      - "${SOLUCIONDESDE0_API_GATEWAY_PORT}"
+    depends_on:
+      soluciondesde0-api-identity:
+        condition: "service_started"
+      soluciondesde0-api-product:
+        condition: "service_started"
+      soluciondesde0-api-orders:
+        condition: "service_started"
+      redis:
+        condition: "service_started"
+    networks:
+      - "aspire"
+networks:
+  aspire:
+    driver: "bridge"
+volumes:
+  soluciondesde0.host-ebf5aaf548-postgres-data:
+    driver: "local"
+  soluciondesde0.host-ebf5aaf548-redis-data:
+    driver: "local"
+  soluciondesde0.host-ebf5aaf548-rabbitmq-data:
+    driver: "local"

@@ -1,0 +1,33 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: soluciondesde0kubernetes-dashboard
+  labels:
+    app: soluciondesde0kubernetes-dashboard
+spec:
+  minReadySeconds: 60
+  replicas: 1
+  selector:
+    matchLabels:
+      app: soluciondesde0kubernetes-dashboard
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: soluciondesde0kubernetes-dashboard
+    spec:
+      containers:
+      - name: soluciondesde0kubernetes-dashboard
+        image: mcr.microsoft.com/dotnet/nightly/aspire-dashboard:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - name: http
+          containerPort: 18888
+        - name: otlp-grpc
+          containerPort: 18889
+        envFrom:
+        - configMapRef:
+            name: soluciondesde0kubernetes-dashboard-env
+      terminationGracePeriodSeconds: 180
