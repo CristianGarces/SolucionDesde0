@@ -218,7 +218,7 @@ const CategoriesPage = () => {
                                                 <IconButton
                                                     size="small"
                                                     onClick={() => handleEditCategory(category.id)}
-                                                    sx={{ mr: 1 }}
+                                                    sx={{ mr: 1 , color : 'primary.main'}}
                                                 >
                                                     <EditIcon fontSize="small" />
                                                 </IconButton>

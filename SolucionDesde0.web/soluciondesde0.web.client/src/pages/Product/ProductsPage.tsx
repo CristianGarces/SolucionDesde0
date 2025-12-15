@@ -6,7 +6,8 @@ import {
     Button,
     CircularProgress,
     Alert,
-    Grid
+    Grid,
+    Paper
 } from '@mui/material';
 import { useAuth } from '../../hooks/useAuth';
 import { productService } from '../../api/productService';
@@ -135,14 +136,16 @@ const ProductsPage = () => {
             {!loading && !error && (
                 <Box>
                     {products.length === 0 ? (
-                        <Box sx={{ textAlign: 'center', py: 8 }}>
-                            <Typography variant="h6" color="text.secondary">
-                                No hay productos disponibles
-                            </Typography>
-                            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
-                                {isAdmin ? 'Crea tu primer producto usando el boton "Crear Producto"' : 'Pronto habra productos disponibles'}
-                            </Typography>
-                        </Box>
+                        <Paper sx={{ p: 4, textAlign: 'center' }}>
+                            <Box sx={{ textAlign: 'center', py: 3 }}>
+                                <Typography variant="h6" color="text.secondary">
+                                    No hay productos disponibles
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                                    {isAdmin ? 'Crea tu primer producto usando el boton "Crear Producto"' : 'Pronto habra productos disponibles'}
+                                </Typography>
+                            </Box>
+                        </Paper>
                     ) : (
                         <Grid container spacing={2}>
                             {products.map((product) => (

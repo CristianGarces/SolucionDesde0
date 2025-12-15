@@ -21,25 +21,40 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import EmailIcon from '@mui/icons-material/Email';
 import PersonIcon from '@mui/icons-material/Person';
 import ShieldIcon from '@mui/icons-material/Shield';
+import type { RoleResponse } from '../../types/role';
+import { roleService } from '../../api/roleService';
 
 const UsersPage = () => {
     const navigate = useNavigate();
     const { user: currentUser } = useAuth();
     const [users, setUsers] = useState<UserResponse[]>([]);
     const [loading, setLoading] = useState(true);
+    const [roles, setRoles] = useState<RoleResponse[]>([]);
+    const [loadingRoles, setLoadingRoles] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
     const isAdmin = currentUser?.role === 'Admin';
 
     useEffect(() => {
-        // Redirigir si no es admin
         if (!isAdmin) {
             navigate('/');
             return;
         }
-
         fetchUsers();
+        fetchRoles(); 
     }, [isAdmin, navigate]);
+
+    const fetchRoles = async () => {
+        try {
+            setLoadingRoles(true);
+            const data = await roleService.getAllRoles();
+            setRoles(data);
+        } catch (err) {
+            console.error('Error loading roles:', err);
+        } finally {
+            setLoadingRoles(false);
+        }
+    };
 
     const fetchUsers = async () => {
         try {
@@ -101,7 +116,10 @@ const UsersPage = () => {
 
     // Funcion para obtener color segun el rol
     const getRoleColor = (roleId: string) => {
-        switch (roleId.toLowerCase()) {
+        const role = roles.find(r => r.id === roleId);
+        if (!role) return 'default';
+
+        switch (role.name.toLowerCase()) {
             case 'admin':
                 return 'error';
             case 'member':
@@ -113,17 +131,17 @@ const UsersPage = () => {
 
     // Funcion para mostrar nombre del rol
     const getRoleName = (roleId: string) => {
-        switch (roleId.toLowerCase()) {
-            case 'admin':
-                return 'Administrador';
-            case 'member':
-                return 'Miembro';
-            default:
-                return roleId;
-        }
+        if (loadingRoles) return 'Cargando...';
+
+        const role = roles.find(r => r.id === roleId);
+
+        if (!role) return 'Rol desconocido';
+
+        return role.name === 'Member' ? 'Miembro' :
+            role.name === 'Admin' ? 'Administrador' : role.name;
     };
 
-    // Si no es admin, no mostrar nada (ya se redirige)
+    // Si no es admin, no mostrar nada
     if (!isAdmin) {
         return null;
     }
@@ -188,7 +206,7 @@ const UsersPage = () => {
                     ) : (
                         <Grid container spacing={2} rowSpacing={10}>
                             {users.map((user) => (
-                                <Grid item xs={12} md={6} lg={4} key={user.id}>
+                                <Grid item xs={12} md={6} lg={6} key={user.id}>
                                     <Paper
                                         elevation={2}
                                         sx={{
@@ -241,7 +259,7 @@ const UsersPage = () => {
                                                 <IconButton
                                                     size="small"
                                                     onClick={() => handleEditUser(user.id)}
-                                                    sx={{ mr: 1 }}
+                                                    sx={{ mr: 1 , color: 'primary.main'}}
                                                 >
                                                     <EditIcon fontSize="small" />
                                                 </IconButton>
