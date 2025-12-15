@@ -2,7 +2,6 @@
 using SolucionDesde0.Api.Orders.Models;
 using SolucionDesde0.Api.Orders.Services;
 using SolucionDesde0.API.Orders.Data;
-using System.Net.Http;
 using static SolucionDesde0.Api.Orders.Dto.OrderDtos;
 
 namespace SolucionDesde0.API.Orders.Services
@@ -12,18 +11,15 @@ namespace SolucionDesde0.API.Orders.Services
         private readonly OrdersDbContext _context;
         private readonly ILogger<OrderService> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IHttpContextAccessor _httpContextAccessor;
 
         public OrderService(
             OrdersDbContext context,
             ILogger<OrderService> logger,
-            IHttpClientFactory httpClientFactory,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpClientFactory httpClientFactory)
         {
             _context = context;
             _logger = logger;
             _httpClientFactory = httpClientFactory;
-            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<IEnumerable<OrderListResponse>> GetUserOrdersAsync(string userId)

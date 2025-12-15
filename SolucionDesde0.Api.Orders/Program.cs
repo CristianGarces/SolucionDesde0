@@ -25,7 +25,6 @@ builder.Services.AddHttpClient("ProductService", client =>
 
 });
 
-builder.Services.AddHttpContextAccessor();
 builder.Services.AddScoped<IOrderService, OrderService>();
 
 builder.Services.AddValidatorsFromAssemblyContaining<CreateOrderRequestValidator>();

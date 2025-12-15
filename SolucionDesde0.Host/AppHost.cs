@@ -53,7 +53,9 @@ var orders = builder.AddProject<Projects.SolucionDesde0_Api_Orders>("soluciondes
 // Notifications Service
 var notifications = builder.AddProject<Projects.SolucionDesde0_Notification>("soluciondesde0-notification")
     .WaitFor(rabbitMq)
-    .WithReference(rabbitMq);
+    .WithReference(rabbitMq)
+    .WithEnvironment("Email__SmtpHost", mailServer.GetEndpoint("smtp").Property(EndpointProperty.Host))
+    .WithEnvironment("Email__SmtpPort", mailServer.GetEndpoint("smtp").Property(EndpointProperty.Port));
 
 var gateway = builder.AddProject<Projects.SolucionDesde0_API_Gateway>("soluciondesde0-api-gateway")
     .WaitFor(identity)
